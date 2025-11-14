@@ -2,9 +2,7 @@ import type { VoiceCommand, VoiceCommandType } from '../types';
 
 /**
  * Pattern matching for voice commands
- * Uses regex patterns to extract data from natural language input
- *
- * TODO: Enhance patterns and add more command types in Phase 3
+ * Supports both English and Spanish with flexible patterns
  */
 
 /**
@@ -17,119 +15,167 @@ interface CommandPattern {
   type: VoiceCommandType;
   /** Function to extract payload from matches */
   extractPayload: (matches: RegExpMatchArray) => Record<string, string | number>;
+  /** Description for debugging */
+  description?: string;
 }
 
 /**
  * Command patterns for parsing voice input
+ * Supports English and Spanish
  * Order matters - more specific patterns should come first
  */
 const commandPatterns: CommandPattern[] = [
-  // Add item: "Add 5 units of Product X at $20 each" or "Add Product X at 20 dollars each quantity 5"
+  // Add item - English: "Add 5 laptops at 20" / "Add laptop at 20 dollars"
+  // Add item - Spanish: "Añadir 5 laptops a 20" / "Agregar laptop a 20 dólares"
   {
-    pattern: /add\s+(?:(\d+)\s+)?(?:units?\s+of\s+)?(.+?)\s+at\s+\$?(\d+(?:\.\d{2})?)/i,
+    pattern: /(?:add|añadir|agregar|a[ñn]ade)\s+(?:(\d+)\s+)?(?:units?\s+of\s+|unidades?\s+de\s+)?(.+?)\s+(?:at|a)\s+\$?(\d+(?:[.,]\d{1,2})?)/i,
     type: 'add_item',
     extractPayload: (matches) => ({
       quantity: matches[1] ? parseInt(matches[1], 10) : 1,
       description: matches[2].trim(),
-      unitPrice: parseFloat(matches[3]),
+      unitPrice: parseFloat(matches[3].replace(',', '.')),
     }),
+    description: 'Add item with quantity and price',
   },
 
-  // Customer name: "Customer is John Smith" or "Customer name is John Smith"
+  // Add item - simpler pattern: "Add laptop 20" / "Añadir laptop 20"
   {
-    pattern: /customer(?:\s+name)?\s+is\s+(.+)/i,
+    pattern: /(?:add|añadir|agregar|a[ñn]ade)\s+(.+?)\s+(\d+(?:[.,]\d{1,2})?)/i,
+    type: 'add_item',
+    extractPayload: (matches) => ({
+      quantity: 1,
+      description: matches[1].trim(),
+      unitPrice: parseFloat(matches[2].replace(',', '.')),
+    }),
+    description: 'Add item simplified',
+  },
+
+  // Customer name - English: "Customer is John" / "Customer name is John"
+  // Customer name - Spanish: "Cliente es John" / "Nombre del cliente es John"
+  {
+    pattern: /(?:customer|cliente)(?:\s+name|\s+nombre)?\s+(?:is|es)\s+(.+)/i,
     type: 'update_customer',
     extractPayload: (matches) => ({
       customerName: matches[1].trim(),
       customerAddress: '',
     }),
+    description: 'Set customer name',
   },
 
-  // Customer address: "Address is 123 Main Street"
+  // Customer address - English: "Address is 123 Main"
+  // Customer address - Spanish: "Dirección es 123 Main"
   {
-    pattern: /(?:customer\s+)?address\s+is\s+(.+)/i,
+    pattern: /(?:customer\s+)?(?:address|direcci[oó]n)\s+(?:is|es)\s+(.+)/i,
     type: 'update_customer',
     extractPayload: (matches) => ({
       customerName: '',
       customerAddress: matches[1].trim(),
     }),
+    description: 'Set customer address',
   },
 
-  // Tax rate: "Set tax to 10 percent" or "Tax rate 10%"
+  // Tax rate - English: "Set tax to 10" / "Tax 10 percent"
+  // Tax rate - Spanish: "Impuesto 10" / "IVA 10 por ciento"
   {
-    pattern: /(?:set\s+)?tax(?:\s+rate)?\s+(?:to\s+)?(\d+(?:\.\d+)?)\s*%?/i,
+    pattern: /(?:set\s+)?(?:tax|impuesto|iva)(?:\s+rate|\s+tasa)?\s+(?:to|a)?\s*(\d+(?:[.,]\d+)?)\s*(?:%|percent|por\s*ciento)?/i,
     type: 'set_tax',
     extractPayload: (matches) => ({
-      taxRate: parseFloat(matches[1]) / 100,
+      taxRate: parseFloat(matches[1].replace(',', '.')) / 100,
     }),
+    description: 'Set tax rate',
   },
 
-  // Remove item: "Delete item 2" or "Remove last item"
+  // Remove item - English: "Delete item 2" / "Remove last item"
+  // Remove item - Spanish: "Eliminar artículo 2" / "Borrar último"
   {
-    pattern: /(?:delete|remove)\s+(?:item\s+)?(\d+|last)/i,
+    pattern: /(?:delete|remove|eliminar|borrar)\s+(?:item|art[ií]culo|elemento)?\s*(\d+|last|[uú]ltimo)/i,
     type: 'remove_item',
     extractPayload: (matches) => ({
-      itemId: matches[1].toLowerCase(),
+      itemId: matches[1].toLowerCase().replace('último', 'last').replace('ultimo', 'last'),
     }),
+    description: 'Remove item',
   },
 
-  // Invoice number: "Invoice number is INV-001"
+  // Invoice number - English: "Invoice number INV-001"
+  // Invoice number - Spanish: "Número de factura INV-001"
   {
-    pattern: /invoice\s+number\s+(?:is\s+)?(.+)/i,
+    pattern: /(?:invoice|factura)\s+(?:number|n[uú]mero)\s+(?:is\s+|es\s+)?(.+)/i,
     type: 'set_invoice_number',
     extractPayload: (matches) => ({
       invoiceNumber: matches[1].trim(),
     }),
+    description: 'Set invoice number',
   },
 
-  // Notes: "Add note" or "Set notes to"
+  // Notes - English: "Add note Payment terms" / "Set notes to Payment terms"
+  // Notes - Spanish: "Añadir nota Términos" / "Notas Términos"
   {
-    pattern: /(?:add|set)\s+note(?:s)?\s+(?:to\s+)?(.+)/i,
+    pattern: /(?:add|set|añadir|agregar)\s+(?:note|nota)(?:s|tas)?\s+(?:to\s+)?(.+)/i,
     type: 'set_notes',
     extractPayload: (matches) => ({
       notes: matches[1].trim(),
     }),
+    description: 'Set notes',
   },
 
-  // Show preview
+  // Show preview - English: "Show preview" / Spanish: "Mostrar vista previa"
   {
-    pattern: /show\s+preview/i,
+    pattern: /(?:show|mostrar)\s+(?:preview|vista\s+previa|previsualizaci[oó]n)/i,
     type: 'show_preview',
     extractPayload: () => ({}),
+    description: 'Show preview',
   },
 
-  // Generate PDF
+  // Generate PDF - English: "Generate PDF" / Spanish: "Generar PDF"
   {
-    pattern: /generate\s+pdf/i,
+    pattern: /(?:generate|generar|crear)\s+pdf/i,
     type: 'generate_pdf',
     extractPayload: () => ({}),
+    description: 'Generate PDF',
   },
 ];
 
 /**
  * Parse a voice transcript into a structured command
+ * Includes debug logging to help troubleshoot recognition issues
  *
  * @param transcript - The voice transcript to parse
- * @returns Parsed voice command or null if no match
+ * @returns Parsed voice command
  */
 export const parseVoiceCommand = (transcript: string): VoiceCommand => {
   const normalizedText = transcript.trim().toLowerCase();
 
+  console.log('🎤 Parsing voice command:', transcript);
+  console.log('📝 Normalized text:', normalizedText);
+
   // Try to match against known patterns
-  for (const { pattern, type, extractPayload } of commandPatterns) {
+  for (const { pattern, type, extractPayload, description } of commandPatterns) {
     const matches = normalizedText.match(pattern);
 
     if (matches) {
+      console.log('✅ Match found:', description || type);
+      console.log('   Pattern:', pattern);
+      console.log('   Matches:', matches);
+
+      const payload = extractPayload(matches);
+      console.log('   Payload:', payload);
+
       return {
         type,
-        payload: extractPayload(matches),
+        payload,
         rawText: transcript,
-        confidence: 0.9, // High confidence for pattern matches
+        confidence: 0.9,
       };
     }
   }
 
   // No pattern matched - return unknown command
+  console.warn('❌ No pattern matched for:', transcript);
+  console.log('💡 Available commands:');
+  commandPatterns.forEach(({ description, type }) => {
+    if (description) console.log(`   - ${description} (${type})`);
+  });
+
   return {
     type: 'unknown',
     payload: {},
