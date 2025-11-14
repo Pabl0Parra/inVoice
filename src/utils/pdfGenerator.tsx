@@ -1,12 +1,10 @@
+import { pdf } from '@react-pdf/renderer';
+import { InvoicePDFTemplate } from '../components/PDF';
 import type { InvoiceData } from '../types';
 
 /**
  * PDF generation utilities
- * Functions for creating and downloading invoice PDFs
- *
- * TODO: Implement actual PDF generation in Phase 5 using:
- * - Option 1: @react-pdf/renderer (React-based, declarative)
- * - Option 2: jsPDF with html2canvas (HTML to PDF conversion)
+ * Functions for creating and downloading invoice PDFs using @react-pdf/renderer
  */
 
 /**
@@ -23,9 +21,7 @@ export const generatePDFFilename = (invoiceData: InvoiceData): string => {
 };
 
 /**
- * Generate invoice PDF
- *
- * TODO: Implement in Phase 5
+ * Generate invoice PDF using @react-pdf/renderer
  *
  * @param invoiceData - Invoice data to generate PDF from
  * @returns Promise that resolves to PDF blob
@@ -33,14 +29,18 @@ export const generatePDFFilename = (invoiceData: InvoiceData): string => {
 export const generateInvoicePDF = async (
   invoiceData: InvoiceData
 ): Promise<Blob> => {
-  // Placeholder implementation
-  console.log('Generating PDF for invoice:', invoiceData);
+  try {
+    // Create PDF document from template
+    const pdfDocument = <InvoicePDFTemplate invoiceData={invoiceData} />;
 
-  // Simulate PDF generation delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Generate blob
+    const blob = await pdf(pdfDocument).toBlob();
 
-  // Return empty blob for now
-  return new Blob(['PDF content placeholder'], { type: 'application/pdf' });
+    return blob;
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw new Error('Failed to generate PDF. Please try again.');
+  }
 };
 
 /**

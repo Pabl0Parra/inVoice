@@ -1,5 +1,6 @@
 import { type FC, type ReactElement, useState } from 'react';
 import type { InvoiceData } from '../../types';
+import { generateAndDownloadPDF, validateInvoiceForPDF } from '../../utils/pdfGenerator';
 
 /**
  * Props for PDFGenerator component
@@ -28,20 +29,21 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   /**
-   * Generate PDF from invoice data
-   * TODO: Implement actual PDF generation in Phase 5
+   * Generate PDF from invoice data and trigger download
    */
   const handleGeneratePDF = async (): Promise<void> => {
     setStatus('generating');
     setErrorMessage('');
 
     try {
-      // Simulate PDF generation delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Validate invoice data
+      const validationErrors = validateInvoiceForPDF(invoiceData);
+      if (validationErrors.length > 0) {
+        throw new Error(validationErrors.join(', '));
+      }
 
-      // TODO: Implement actual PDF generation using @react-pdf/renderer or jspdf
-      // For now, just show success message
-      console.log('PDF would be generated with data:', invoiceData);
+      // Generate and download PDF
+      await generateAndDownloadPDF(invoiceData);
 
       setStatus('success');
 
