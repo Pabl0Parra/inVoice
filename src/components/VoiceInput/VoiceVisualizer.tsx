@@ -1,5 +1,4 @@
-import { type FC, useEffect, useRef, useState } from 'react';
-import { LiveAudioVisualizer } from 'react-audio-visualize';
+import { type FC, useEffect, useRef } from 'react';
 import type { SpeechRecognitionStatus } from '../../types';
 
 interface VoiceVisualizerProps {
@@ -8,67 +7,146 @@ interface VoiceVisualizerProps {
 }
 
 /**
- * Audio visualization component for voice input
- * Shows real-time audio waveform when microphone is active
+ * Custom audio visualization component for voice input
+ * Uses Web Audio API to create real-time waveform visualization
+ * Compatible with React 19
  */
 export const VoiceVisualizer: FC<VoiceVisualizerProps> = ({
   status,
   className = '',
 }) => {
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number | undefined>(undefined);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    // Only set up audio when listening
-    if (status === 'listening') {
-      // Request microphone access
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          // Create MediaRecorder for visualization
-          const recorder = new MediaRecorder(stream);
-          setMediaRecorder(recorder);
-          recorder.start();
+    if (status !== 'listening') {
+      // Cleanup when not listening
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
 
-          // Create audio context for visualization
-          audioContextRef.current = new AudioContext();
-        })
-        .catch((error) => {
-          console.error('Error accessing microphone for visualization:', error);
-        });
+      // Clear canvas
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
 
-      return () => {
-        // Cleanup when status changes
-        if (mediaRecorder) {
-          mediaRecorder.stop();
-          mediaRecorder.stream.getTracks().forEach((track) => track.stop());
-        }
-        if (audioContextRef.current) {
-          audioContextRef.current.close();
-        }
-        setMediaRecorder(null);
-      };
+      return;
     }
+
+    // Set up audio visualization when listening
+    const setupAudioVisualization = async () => {
+      try {
+        // Get microphone access
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streamRef.current = stream;
+
+        // Create audio context and analyser
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContextRef.current = audioContext;
+
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        analyserRef.current = analyser;
+
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray: Uint8Array<ArrayBuffer> = new Uint8Array(bufferLength);
+        dataArrayRef.current = dataArray;
+
+        // Start animation
+        draw();
+      } catch (error) {
+        console.error('Error setting up audio visualization:', error);
+      }
+    };
+
+    const draw = () => {
+      if (status !== 'listening') return;
+
+      const canvas = canvasRef.current;
+      const analyser = analyserRef.current;
+      const dataArray = dataArrayRef.current;
+
+      if (!canvas || !analyser || !dataArray) return;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Get frequency data
+      analyser.getByteFrequencyData(dataArray);
+
+      // Clear canvas
+      ctx.fillStyle = 'transparent';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw bars
+      const barWidth = (canvas.width / dataArray.length) * 2;
+      let barHeight;
+      let x = 0;
+
+      for (let i = 0; i < dataArray.length; i++) {
+        barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+
+        // Gradient for bars
+        const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+        gradient.addColorStop(0, '#3B82F6'); // blue-500
+        gradient.addColorStop(1, '#60A5FA'); // blue-400
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+
+        x += barWidth;
+      }
+
+      // Continue animation
+      animationFrameRef.current = requestAnimationFrame(draw);
+    };
+
+    setupAudioVisualization();
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
   }, [status]);
 
-  // Only show visualizer when actively listening
-  if (status !== 'listening' || !mediaRecorder) {
+  // Don't render if not listening
+  if (status !== 'listening') {
     return null;
   }
 
   return (
-    <div className={`flex justify-center items-center h-16 ${className}`}>
-      <LiveAudioVisualizer
-        mediaRecorder={mediaRecorder}
+    <div className={`flex justify-center items-center ${className}`}>
+      <canvas
+        ref={canvasRef}
         width={200}
         height={50}
-        barWidth={2}
-        gap={2}
-        barColor={'#3B82F6'}
-        fftSize={512}
-        maxDecibels={-10}
-        minDecibels={-90}
-        smoothingTimeConstant={0.4}
+        className="rounded"
       />
     </div>
   );
