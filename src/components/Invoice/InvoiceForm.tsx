@@ -48,28 +48,27 @@ export const InvoiceForm: FC<InvoiceFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`bg-white rounded-lg shadow-md p-6 ${className}`}
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 ${className}`}
       aria-label="Invoice details form"
     >
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Invoice Details</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Invoice Details</h2>
 
       <div className="space-y-4">
-        {/* Invoice Number */}
+        {/* Invoice Number - Auto-generated, read-only */}
         <div>
-          <label htmlFor="invoiceNumber" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="invoiceNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Invoice Number
+            <span className="ml-2 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded">
+              Auto
+            </span>
           </label>
           <input
             type="text"
             id="invoiceNumber"
             value={invoiceData.invoiceNumber}
-            onChange={(e) => handleFieldChange('invoiceNumber', e.target.value)}
-            onFocus={() => setFocusedField('invoiceNumber')}
-            onBlur={() => setFocusedField(null)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              focusedField === 'invoiceNumber' ? 'border-blue-500' : 'border-gray-300'
-            }`}
-            placeholder="INV-001"
+            readOnly
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+            placeholder="0001"
           />
         </div>
 

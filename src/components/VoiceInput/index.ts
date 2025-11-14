@@ -5,3 +5,4 @@
 export { MicrophoneButton } from './MicrophoneButton';
 export { TranscriptionDisplay } from './TranscriptionDisplay';
 export { VoiceCommandProcessor } from './VoiceCommandProcessor';
+export { VoiceVisualizer } from './VoiceVisualizer';

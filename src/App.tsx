@@ -10,12 +10,14 @@ import {
   MicrophoneButton,
   TranscriptionDisplay,
   VoiceCommandProcessor,
+  VoiceVisualizer,
 } from './components/VoiceInput';
 import {
   AddItemForm,
   InvoiceForm,
   InvoiceItemsList,
   InvoicePreview,
+  InvoiceFieldGuide,
 } from './components/Invoice';
 import { PDFGenerator } from './components/PDF';
 import { Header } from './components/Layout/Header';
@@ -212,6 +214,9 @@ function AppContent() {
                 />
               </div>
 
+              {/* Audio Visualizer */}
+              <VoiceVisualizer status={voiceStatus} className="mb-4" />
+
               {/* Status Text */}
               <div className="text-center mb-4">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -245,6 +250,9 @@ function AppContent() {
                 </button>
               )}
             </div>
+
+            {/* Invoice Field Guide */}
+            <InvoiceFieldGuide invoiceData={invoiceData} />
 
             {/* Manual Add Item Form */}
             <AddItemForm onAddItem={addItem} />

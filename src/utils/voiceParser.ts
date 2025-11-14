@@ -96,17 +96,6 @@ const commandPatterns: CommandPattern[] = [
     description: 'Remove item',
   },
 
-  // Invoice number - English: "Invoice number INV-001"
-  // Invoice number - Spanish: "Número de factura INV-001"
-  {
-    pattern: /(?:invoice|factura)\s+(?:number|n[uú]mero)\s+(?:is\s+|es\s+)?(.+)/i,
-    type: 'set_invoice_number',
-    extractPayload: (matches) => ({
-      invoiceNumber: matches[1].trim(),
-    }),
-    description: 'Set invoice number',
-  },
-
   // Notes - English: "Add note Payment terms" / "Set notes to Payment terms"
   // Notes - Spanish: "Añadir nota Términos" / "Notas Términos"
   {
