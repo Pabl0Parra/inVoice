@@ -4,3 +4,4 @@
 
 export { PDFGenerator } from './PDFGenerator';
 export { InvoiceTemplate } from './InvoiceTemplate';
+export { InvoicePDFTemplate } from './InvoicePDFTemplate';
