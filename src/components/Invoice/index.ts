@@ -2,6 +2,7 @@
  * Invoice components
  */
 
+export { AddItemForm } from './AddItemForm';
 export { InvoiceForm } from './InvoiceForm';
 export { InvoiceItem } from './InvoiceItem';
 export { InvoiceItemsList } from './InvoiceItemsList';

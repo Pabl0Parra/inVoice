@@ -19,6 +19,8 @@ export type {
   SpeechRecognitionStatus,
   SpeechRecognitionErrorType,
   SpeechRecognitionError,
+  SpeechRecognitionErrorEvent,
+  SpeechRecognitionEvent,
   TranscriptSegment,
   ISpeechRecognition,
   ISpeechRecognitionConstructor,
