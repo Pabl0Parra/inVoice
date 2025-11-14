@@ -62,10 +62,22 @@ export type InvoiceAction =
   | { type: 'RESET_INVOICE' };
 
 /**
+ * Generate next invoice number
+ * Auto-increments from localStorage, starting at 0001
+ */
+export const generateInvoiceNumber = (): string => {
+  const STORAGE_KEY = 'lastInvoiceNumber';
+  const lastNumber = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+  const nextNumber = lastNumber + 1;
+  localStorage.setItem(STORAGE_KEY, nextNumber.toString());
+  return nextNumber.toString().padStart(4, '0');
+};
+
+/**
  * Initial state for a new invoice
  */
 export const initialInvoiceState: InvoiceData = {
-  invoiceNumber: '',
+  invoiceNumber: generateInvoiceNumber(),
   date: new Date(),
   dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
   customerName: '',
