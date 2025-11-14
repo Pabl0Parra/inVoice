@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import type { SpeechRecognitionStatus } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 /**
  * Props for MicrophoneButton component
@@ -22,6 +23,8 @@ export const MicrophoneButton: FC<MicrophoneButtonProps> = ({
   onToggle,
   className = '',
 }) => {
+  const { t } = useLanguage();
+
   // Button styling based on status
   const getButtonStyles = (): string => {
     const baseStyles = 'w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg';
@@ -32,9 +35,9 @@ export const MicrophoneButton: FC<MicrophoneButtonProps> = ({
       case 'processing':
         return `${baseStyles} bg-yellow-500 opacity-75 cursor-wait`;
       case 'error':
-        return `${baseStyles} bg-gray-400 cursor-not-allowed`;
+        return `${baseStyles} bg-gray-400 dark:bg-gray-600 cursor-not-allowed`;
       case 'unsupported':
-        return `${baseStyles} bg-gray-300 cursor-not-allowed`;
+        return `${baseStyles} bg-gray-300 dark:bg-gray-700 cursor-not-allowed`;
       default:
         return `${baseStyles} bg-blue-500 hover:bg-blue-600 active:scale-95`;
     }
@@ -47,7 +50,7 @@ export const MicrophoneButton: FC<MicrophoneButtonProps> = ({
       onClick={onToggle}
       disabled={isDisabled}
       className={`${getButtonStyles()} ${className}`}
-      aria-label={status === 'listening' ? 'Stop recording' : 'Start recording'}
+      aria-label={status === 'listening' ? t.stopListening : t.startListening}
       aria-pressed={status === 'listening'}
       type="button"
     >

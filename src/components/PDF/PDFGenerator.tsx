@@ -1,6 +1,7 @@
 import { type FC, type ReactElement, useState } from 'react';
 import type { InvoiceData } from '../../types';
 import { generateAndDownloadPDF, validateInvoiceForPDF } from '../../utils/pdfGenerator';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 /**
  * Props for PDFGenerator component
@@ -25,6 +26,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
   invoiceData,
   className = '',
 }) => {
+  const { t } = useLanguage();
   const [status, setStatus] = useState<PDFStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -85,7 +87,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            Generating...
+            {t.generating}
           </>
         );
       case 'success':
@@ -105,7 +107,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            PDF Generated!
+            PDF {t.generatePDF}!
           </>
         );
       case 'error':
@@ -125,7 +127,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-            Failed
+            {t.error}
           </>
         );
       default:
@@ -145,7 +147,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            Generate PDF
+            {t.generatePDF}
           </>
         );
     }

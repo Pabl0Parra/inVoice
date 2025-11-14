@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { useSpeechRecognition, useInvoiceState, useVoiceCommands } from './hooks';
 import {
   MicrophoneButton,
@@ -12,13 +14,15 @@ import {
   InvoicePreview,
 } from './components/Invoice';
 import { PDFGenerator } from './components/PDF';
+import { Header } from './components/Layout/Header';
 import type { VoiceCommand, InvoiceData } from './types';
 
 /**
- * Main application component
- * Voice-enabled invoice builder with mobile-first responsive design
+ * Main application component wrapped with providers
  */
-function App() {
+function AppContent() {
+  const { t } = useLanguage();
+
   // State management
   const {
     invoiceData,
@@ -121,23 +125,14 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">inVoice</h1>
-            <p className="text-sm text-gray-500 hidden sm:block">
-              Voice-Enabled Invoice Builder
-            </p>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      {/* Header with language and theme toggles */}
+      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Browser Support Warning */}
         {!isSupported && (
-          <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -153,12 +148,11 @@ function App() {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">
-                  Voice input not available
+                <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                  {t.voiceNotSupported}
                 </h3>
-                <p className="mt-1 text-sm text-yellow-700">
-                  Speech recognition is not supported in this browser. Please use Chrome or
-                  Edge for voice features. You can still create invoices manually.
+                <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-300">
+                  {t.microphoneError}
                 </p>
               </div>
             </div>
@@ -167,7 +161,7 @@ function App() {
 
         {/* Voice Error Display */}
         {voiceError && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -183,20 +177,24 @@ function App() {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Voice Recognition Error</h3>
-                <p className="mt-1 text-sm text-red-700">{voiceError.message}</p>
+                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                  {t.error}
+                </h3>
+                <p className="mt-1 text-sm text-red-700 dark:text-red-300">{voiceError.message}</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Mobile-First Responsive Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Responsive Layout: Mobile (1 col) → Tablet (2 col) → Desktop (3 col) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Left Column: Voice Input & Controls */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="space-y-6">
             {/* Voice Control */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Voice Input</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                {t.voiceInput}
+              </h2>
 
               {/* Microphone Button */}
               <div className="flex justify-center mb-4">
@@ -205,12 +203,12 @@ function App() {
 
               {/* Status Text */}
               <div className="text-center mb-4">
-                <p className="text-sm text-gray-600">
-                  {voiceStatus === 'listening' && 'Listening...'}
-                  {voiceStatus === 'processing' && 'Processing...'}
-                  {voiceStatus === 'idle' && isSupported && 'Click to start'}
-                  {voiceStatus === 'unsupported' && 'Not supported'}
-                  {voiceStatus === 'error' && 'Error occurred'}
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {voiceStatus === 'listening' && t.listening}
+                  {voiceStatus === 'processing' && t.processing}
+                  {voiceStatus === 'idle' && isSupported && t.startListening}
+                  {voiceStatus === 'unsupported' && t.unsupported}
+                  {voiceStatus === 'error' && t.error}
                 </p>
               </div>
 
@@ -228,9 +226,9 @@ function App() {
               {transcripts.length > 0 && (
                 <button
                   onClick={resetTranscripts}
-                  className="mt-4 w-full text-sm text-gray-600 hover:text-gray-800 underline"
+                  className="mt-4 w-full text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 underline"
                 >
-                  Clear transcripts
+                  {t.clearTranscription}
                 </button>
               )}
             </div>
@@ -238,7 +236,7 @@ function App() {
             {/* Manual Add Item Form */}
             <AddItemForm onAddItem={addItem} />
 
-            {/* Invoice Details Form */}
+            {/* Invoice Details Form - Show on desktop */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
@@ -247,9 +245,11 @@ function App() {
           </div>
 
           {/* Middle Column: Items List */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Invoice Items</h2>
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                {t.invoiceItems}
+              </h2>
               <InvoiceItemsList
                 items={invoiceData.items}
                 editingItemId={editingItemId}
@@ -258,7 +258,7 @@ function App() {
               />
             </div>
 
-            {/* Invoice Form - Mobile */}
+            {/* Invoice Form - Show on tablet/mobile */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
@@ -267,7 +267,7 @@ function App() {
           </div>
 
           {/* Right Column: Preview & PDF */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="md:col-span-2 lg:col-span-1 space-y-6">
             {/* Invoice Preview */}
             <InvoicePreview invoiceData={invoiceData} />
 
@@ -277,35 +277,27 @@ function App() {
         </div>
 
         {/* Help Section */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">Voice Commands</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
+        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">
+            {t.voiceCommandsHelp}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-blue-800 dark:text-blue-300">
             <div>
-              <p className="font-medium mb-2">Add Items:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700">
-                <li>"Add 5 units of Product X at $20"</li>
-                <li>"Add laptop at 999 dollars"</li>
+              <p className="font-medium mb-2">{t.commandExamples}:</p>
+              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                <li>"{t.addItemCommand}"</li>
               </ul>
             </div>
             <div>
-              <p className="font-medium mb-2">Customer Info:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700">
-                <li>"Customer is John Smith"</li>
-                <li>"Address is 123 Main Street"</li>
+              <p className="font-medium mb-2">{t.customerName}:</p>
+              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                <li>"{t.customerCommand}"</li>
               </ul>
             </div>
             <div>
-              <p className="font-medium mb-2">Invoice Details:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700">
-                <li>"Set tax to 10 percent"</li>
-                <li>"Invoice number is INV-001"</li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-medium mb-2">Actions:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700">
-                <li>"Remove last item"</li>
-                <li>"Generate PDF"</li>
+              <p className="font-medium mb-2">{t.tax}:</p>
+              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                <li>"{t.taxCommand}"</li>
               </ul>
             </div>
           </div>
@@ -313,14 +305,27 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-sm text-gray-500">
-            inVoice - Voice-Enabled Invoice Builder | Built with React 19 & TypeScript
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+            {t.appTitle} | React 19 & TypeScript
           </p>
         </div>
       </footer>
     </div>
+  );
+}
+
+/**
+ * App wrapper with providers
+ */
+function App() {
+  return (
+    <ThemeProvider>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }
 
