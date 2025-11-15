@@ -1,4 +1,4 @@
-import { type FC, type FormEvent, useState } from 'react';
+import { type FC, useState } from 'react';
 import type { InvoiceItem } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -26,11 +26,9 @@ export const AddItemForm: FC<AddItemFormProps> = ({
   const [unitPrice, setUnitPrice] = useState<string>('');
 
   /**
-   * Handle form submission
+   * Handle adding the item
    */
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-
+  const handleAddItem = (): void => {
     // Validate inputs
     if (!description.trim()) {
       return;
@@ -61,17 +59,21 @@ export const AddItemForm: FC<AddItemFormProps> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 ${className}`}
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-6 ${className}`}
       aria-label={t.addItemManually}
     >
-      <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-3">{t.addItemManually}</h3>
+      <h3 className="text-md md:text-lg font-semibold text-gray-900 dark:text-white mb-3 md:mb-4">
+        {t.addItemManually}
+      </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         {/* Description */}
         <div>
-          <label htmlFor="itemDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="itemDescription"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             {t.description} *
           </label>
           <input
@@ -81,7 +83,7 @@ export const AddItemForm: FC<AddItemFormProps> = ({
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md
               bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-              focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm md:text-base"
             placeholder={t.description}
             required
           />
@@ -90,7 +92,10 @@ export const AddItemForm: FC<AddItemFormProps> = ({
         {/* Quantity and Unit Price */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="itemQuantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="itemQuantity"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               {t.quantity} *
             </label>
             <input
@@ -100,7 +105,7 @@ export const AddItemForm: FC<AddItemFormProps> = ({
               onChange={(e) => setQuantity(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md
                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm md:text-base"
               placeholder="1"
               min="0"
               step="0.01"
@@ -109,7 +114,10 @@ export const AddItemForm: FC<AddItemFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="itemUnitPrice" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="itemUnitPrice"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               {t.unitPrice} *
             </label>
             <input
@@ -119,7 +127,7 @@ export const AddItemForm: FC<AddItemFormProps> = ({
               onChange={(e) => setUnitPrice(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md
                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm md:text-base"
               placeholder="0.00"
               min="0"
               step="0.01"
@@ -130,12 +138,13 @@ export const AddItemForm: FC<AddItemFormProps> = ({
 
         {/* Submit Button */}
         <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 active:bg-blue-800 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          type="button"
+          onClick={handleAddItem}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 active:bg-blue-800 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm md:text-base"
         >
           {t.addItem}
         </button>
       </div>
-    </form>
+    </div>
   );
 };

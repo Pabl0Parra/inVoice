@@ -137,7 +137,7 @@ function AppContent() {
       {/* Header with language and theme toggles */}
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
         {/* Browser Support Warning */}
         {!isSupported && (
           <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
@@ -197,12 +197,12 @@ function AppContent() {
         )}
 
         {/* Responsive Layout: Mobile (1 col) → Tablet (2 col) → Desktop (3 col) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="main-grid">
           {/* Left Column: Voice Input & Controls */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {/* Voice Control */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-6">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4">
                 {t.voiceInput}
               </h2>
 
@@ -219,7 +219,7 @@ function AppContent() {
 
               {/* Status Text */}
               <div className="text-center mb-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
                   {voiceStatus === 'listening' && t.listening}
                   {voiceStatus === 'processing' && t.processing}
                   {voiceStatus === 'idle' && isSupported && t.startListening}
@@ -266,9 +266,9 @@ function AppContent() {
           </div>
 
           {/* Middle Column: Items List */}
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="space-y-4 md:space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-6">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4">
                 {t.invoiceItems}
               </h2>
               <InvoiceItemsList
@@ -288,7 +288,7 @@ function AppContent() {
           </div>
 
           {/* Right Column: Preview & PDF */}
-          <div className="md:col-span-2 lg:col-span-1 space-y-6">
+          <div className="md:col-span-2 lg:col-span-1 space-y-4 md:space-y-6">
             {/* Invoice Preview */}
             <InvoicePreview invoiceData={invoiceData} />
 
@@ -298,11 +298,11 @@ function AppContent() {
         </div>
 
         {/* Help Section */}
-        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">
+        <div className="mt-6 md:mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">
             {t.voiceCommandsHelp}
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-blue-800 dark:text-blue-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm text-blue-800 dark:text-blue-300">
             <div>
               <p className="font-medium mb-2">{t.commandExamples}:</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
@@ -326,9 +326,9 @@ function AppContent() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-8 md:mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+          <p className="text-center text-xs md:text-sm text-gray-500 dark:text-gray-400">
             {t.appTitle} | React 19 & TypeScript
           </p>
         </div>
