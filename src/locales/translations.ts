@@ -82,6 +82,8 @@ export interface Translations {
   voiceCommandsHelp: string;
   commandExamples: string;
   addItemCommand: string;
+  addItemCommand2: string;
+  addItemCommand3: string;
   customerCommand: string;
   taxCommand: string;
 
@@ -172,10 +174,12 @@ export const translations: Record<Language, Translations> = {
 
     // Voice Commands Help
     voiceCommandsHelp: 'Ayuda de Comandos de Voz',
-    commandExamples: 'Ejemplos de comandos',
-    addItemCommand: 'Añadir 5 laptops a 999',
-    customerCommand: 'Cliente es Juan Pérez',
-    taxCommand: 'IVA 21',
+    commandExamples: 'Ejemplos de comandos de pintura',
+    addItemCommand: 'Añadir 500 pies cuadrados pintura exterior a 3.50',
+    addItemCommand2: 'Agregar 10 galones pintura premium a 45',
+    addItemCommand3: 'Añadir 8 horas mano de obra a 65',
+    customerCommand: 'Cliente es Edificio Torre Central',
+    taxCommand: 'IVA 16',
 
     // Errors
     error: 'Error',
@@ -263,10 +267,12 @@ export const translations: Record<Language, Translations> = {
 
     // Voice Commands Help
     voiceCommandsHelp: 'Voice Commands Help',
-    commandExamples: 'Command examples',
-    addItemCommand: 'Add 5 laptops at 999',
-    customerCommand: 'Customer is John Smith',
-    taxCommand: 'Set tax to 21',
+    commandExamples: 'Painting command examples',
+    addItemCommand: 'Add 500 square feet exterior painting at 3.50',
+    addItemCommand2: 'Add 10 gallons premium paint at 45',
+    addItemCommand3: 'Add 8 hours labor at 65',
+    customerCommand: 'Customer is Central Tower Building',
+    taxCommand: 'Set tax to 10',
 
     // Errors
     error: 'Error',

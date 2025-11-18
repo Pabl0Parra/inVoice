@@ -306,24 +306,28 @@ function AppContent() {
           <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">
             {t.voiceCommandsHelp}
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-blue-800 dark:text-blue-300">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm text-blue-800 dark:text-blue-300">
             <div>
               <p className="font-medium mb-2">{t.commandExamples}:</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
                 <li>"{t.addItemCommand}"</li>
+                <li>"{t.addItemCommand2}"</li>
+                <li>"{t.addItemCommand3}"</li>
               </ul>
             </div>
-            <div>
-              <p className="font-medium mb-2">{t.customerName}:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
-                <li>"{t.customerCommand}"</li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-medium mb-2">{t.tax}:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
-                <li>"{t.taxCommand}"</li>
-              </ul>
+            <div className="space-y-3">
+              <div>
+                <p className="font-medium mb-1">{t.customerName}:</p>
+                <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                  <li>"{t.customerCommand}"</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium mb-1">{t.tax}:</p>
+                <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                  <li>"{t.taxCommand}"</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
