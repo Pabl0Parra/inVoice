@@ -1,4 +1,4 @@
-import { type FC, type ReactElement, useState } from 'react';
+import { type ReactElement, useState, useImperativeHandle, forwardRef } from 'react';
 import type { InvoiceData } from '../../types';
 import { generateAndDownloadPDF, validateInvoiceForPDF } from '../../utils/pdfGenerator';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -19,13 +19,21 @@ interface PDFGeneratorProps {
 type PDFStatus = 'idle' | 'generating' | 'success' | 'error';
 
 /**
+ * Public methods exposed through ref
+ */
+export interface PDFGeneratorHandle {
+  generatePDF: () => Promise<void>;
+}
+
+/**
  * Component for generating and downloading invoice PDFs
  * Shows loading state during generation and success/error feedback
+ * Can be triggered via ref for voice command integration
  */
-export const PDFGenerator: FC<PDFGeneratorProps> = ({
+export const PDFGenerator = forwardRef<PDFGeneratorHandle, PDFGeneratorProps>(({
   invoiceData,
   className = '',
-}) => {
+}, ref) => {
   const { t, language } = useLanguage();
   const [status, setStatus] = useState<PDFStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -56,8 +64,19 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
     } catch (error) {
       setStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'Failed to generate PDF');
+
+      // Auto-reset error state after 5 seconds so user can try again
+      setTimeout(() => {
+        setStatus('idle');
+        setErrorMessage('');
+      }, 5000);
     }
   };
+
+  // Expose generatePDF method via ref for voice command integration
+  useImperativeHandle(ref, () => ({
+    generatePDF: handleGeneratePDF,
+  }));
 
   /**
    * Get button content based on status
@@ -124,10 +143,10 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
-            {t.error}
+            {language === 'es' ? 'Intentar de nuevo' : 'Try Again'}
           </>
         );
       default:
@@ -200,4 +219,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
       )}
     </div>
   );
-};
+});
+
+// Display name for debugging
+PDFGenerator.displayName = 'PDFGenerator';

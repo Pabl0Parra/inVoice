@@ -2,6 +2,6 @@
  * PDF components
  */
 
-export { PDFGenerator } from './PDFGenerator';
+export { PDFGenerator, type PDFGeneratorHandle } from './PDFGenerator';
 export { InvoiceTemplate } from './InvoiceTemplate';
 export { InvoicePDFTemplate } from './InvoicePDFTemplate';

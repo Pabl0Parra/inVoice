@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import {
@@ -19,7 +19,7 @@ import {
   InvoicePreview,
   InvoiceFieldGuide,
 } from './components/Invoice';
-import { PDFGenerator } from './components/PDF';
+import { PDFGenerator, type PDFGeneratorHandle } from './components/PDF';
 import { Header } from './components/Layout/Header';
 import type { VoiceCommand, InvoiceData } from './types';
 
@@ -47,6 +47,9 @@ function AppContent() {
 
   // Voice command processing
   const { processTranscript, commandToAction } = useVoiceCommands();
+
+  // Ref for PDF generator to trigger generation via voice command
+  const pdfGeneratorRef = useRef<PDFGeneratorHandle>(null);
 
   // Track last processed command for UI feedback
   const lastCommand: VoiceCommand | null =
@@ -76,6 +79,15 @@ function AppContent() {
     const command = processTranscript(lastTranscript.text);
     if (!command) return;
 
+    // Handle special commands that don't map to invoice actions
+    if (command.type === 'generate_pdf') {
+      // Trigger PDF generation via ref
+      if (pdfGeneratorRef.current) {
+        pdfGeneratorRef.current.generatePDF();
+      }
+      return;
+    }
+
     // Convert command to invoice action
     const action = commandToAction(command);
     if (action) {
@@ -98,8 +110,24 @@ function AppContent() {
    * Handle invoice data updates from form
    */
   const handleInvoiceUpdate = (updates: Partial<InvoiceData>): void => {
+    // Handle customer fields as a single update to avoid multiple dispatches
+    if ('customerName' in updates || 'customerAddress' in updates) {
+      dispatch({
+        type: 'SET_CUSTOMER',
+        payload: {
+          customerName: updates.customerName ?? '',
+          customerAddress: updates.customerAddress ?? '',
+        },
+      });
+    }
+
+    // Process remaining updates
     Object.entries(updates).forEach(([key, value]) => {
       switch (key) {
+        case 'customerName':
+        case 'customerAddress':
+          // Skip - already handled above
+          break;
         case 'invoiceNumber':
           dispatch({ type: 'SET_INVOICE_NUMBER', payload: value as string });
           break;
@@ -108,19 +136,6 @@ function AppContent() {
           break;
         case 'dueDate':
           dispatch({ type: 'SET_DUE_DATE', payload: value as Date });
-          break;
-        case 'customerName':
-        case 'customerAddress':
-          if ('customerName' in updates || 'customerAddress' in updates) {
-            dispatch({
-              type: 'SET_CUSTOMER',
-              payload: {
-                customerName: updates.customerName || invoiceData.customerName,
-                customerAddress:
-                  updates.customerAddress || invoiceData.customerAddress,
-              },
-            });
-          }
           break;
         case 'taxRate':
           dispatch({ type: 'SET_TAX_RATE', payload: value as number });
@@ -297,7 +312,7 @@ function AppContent() {
             <InvoicePreview invoiceData={invoiceData} />
 
             {/* PDF Generator */}
-            <PDFGenerator invoiceData={invoiceData} />
+            <PDFGenerator ref={pdfGeneratorRef} invoiceData={invoiceData} />
           </div>
         </div>
 

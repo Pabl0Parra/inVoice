@@ -18,45 +18,52 @@ export interface VoiceCommandExample {
 
 /**
  * Map of voice commands organized by field/action
+ * Examples tailored for commercial painting company
  */
 export const voiceCommandExamples: VoiceCommandExample[] = [
   {
     type: 'update_customer',
     fieldName: 'customerName',
-    examplesEn: ['Customer is John Smith', 'Customer name is ABC Corp'],
-    examplesEs: ['Cliente es Juan Pérez', 'Nombre del cliente es ABC Corp'],
+    examplesEn: [
+      'Customer is Central Tower Building',
+      'Customer name is Plaza Commercial Corp',
+    ],
+    examplesEs: [
+      'Cliente es Edificio Torre Central',
+      'Nombre del cliente es Plaza Comercial S.A.',
+    ],
   },
   {
     type: 'update_customer',
     fieldName: 'customerAddress',
     examplesEn: [
-      'Address is 123 Main Street',
-      'Customer address is 456 Oak Ave',
+      'Address is 123 Business Plaza Suite 400',
+      'Customer address is 789 Commerce Boulevard',
     ],
     examplesEs: [
-      'Dirección es Calle Principal 123',
-      'Dirección del cliente es Av. Roble 456',
+      'Dirección es Av. Principal 123 Oficina 400',
+      'Dirección del cliente es Blvd. Comercio 789',
     ],
   },
   {
     type: 'add_item',
     fieldName: 'items',
     examplesEn: [
-      'Add 5 laptops at 999',
-      'Add consulting at 150 dollars',
-      'Add service 50',
+      'Add 500 square feet exterior painting at 3.50',
+      'Add 10 gallons premium paint at 45',
+      'Add 8 hours labor at 65',
     ],
     examplesEs: [
-      'Añadir 5 laptops a 999',
-      'Agregar consultoría a 150 dólares',
-      'Añadir servicio 50',
+      'Añadir 500 pies cuadrados pintura exterior a 3.50',
+      'Agregar 10 galones pintura premium a 45',
+      'Añadir 8 horas mano de obra a 65',
     ],
   },
   {
     type: 'set_tax',
     fieldName: 'tax',
-    examplesEn: ['Tax 10 percent', 'Set tax to 21', 'IVA 16'],
-    examplesEs: ['Impuesto 10 por ciento', 'IVA 21', 'Tasa de impuesto 16'],
+    examplesEn: ['Tax 10 percent', 'Set tax to 8', 'IVA 16'],
+    examplesEs: ['Impuesto 10 por ciento', 'IVA 16', 'Tasa de impuesto 8'],
   },
   {
     type: 'remove_item',
@@ -67,10 +74,13 @@ export const voiceCommandExamples: VoiceCommandExample[] = [
   {
     type: 'set_notes',
     fieldName: 'notes',
-    examplesEn: ['Add note Payment terms 30 days', 'Set notes to Thank you'],
+    examplesEn: [
+      'Add note Commercial painting work completed',
+      'Set notes to Payment due within 30 days',
+    ],
     examplesEs: [
-      'Añadir nota Términos de pago 30 días',
-      'Notas Gracias por su compra',
+      'Añadir nota Trabajo de pintura comercial completado',
+      'Notas Pago dentro de 30 días',
     ],
   },
   {

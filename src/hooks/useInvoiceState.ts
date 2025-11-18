@@ -65,9 +65,15 @@ const invoiceReducer = (state: InvoiceData, action: InvoiceAction): InvoiceData 
     }
 
     case 'SET_CUSTOMER':
+      // Only update fields that have non-empty values to prevent overwriting
       return {
         ...state,
-        ...action.payload,
+        customerName: action.payload.customerName && action.payload.customerName.trim() !== ''
+          ? action.payload.customerName
+          : state.customerName,
+        customerAddress: action.payload.customerAddress && action.payload.customerAddress.trim() !== ''
+          ? action.payload.customerAddress
+          : state.customerAddress,
       };
 
     case 'SET_TAX_RATE': {
