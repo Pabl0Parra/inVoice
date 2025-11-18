@@ -6,6 +6,12 @@ export interface Translations {
   darkMode: string;
   lightMode: string;
 
+  // Tabs
+  tabPart1: string;
+  tabPart2: string;
+  tabPart1Description: string;
+  tabPart2Description: string;
+
   // Voice Input
   voiceInput: string;
   startListening: string;
@@ -100,6 +106,12 @@ export const translations: Record<Language, Translations> = {
     darkMode: 'Modo Oscuro',
     lightMode: 'Modo Claro',
 
+    // Tabs
+    tabPart1: 'Generador de Facturas',
+    tabPart2: 'Funciones Avanzadas',
+    tabPart1Description: 'Crear facturas con voz',
+    tabPart2Description: 'Gestión empresarial de pintura',
+
     // Voice Input
     voiceInput: 'Entrada de Voz',
     startListening: 'Iniciar Escucha',
@@ -192,6 +204,12 @@ export const translations: Record<Language, Translations> = {
     appTitle: 'Voice Invoicing',
     darkMode: 'Dark Mode',
     lightMode: 'Light Mode',
+
+    // Tabs
+    tabPart1: 'Invoice Generator',
+    tabPart2: 'Advanced Features',
+    tabPart1Description: 'Create invoices with voice',
+    tabPart2Description: 'Painting business management',
 
     // Voice Input
     voiceInput: 'Voice Input',
