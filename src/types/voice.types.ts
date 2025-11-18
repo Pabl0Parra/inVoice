@@ -180,9 +180,10 @@ export interface VoiceRecognitionConfig {
 
 /**
  * Default voice recognition configuration
+ * Set to Spanish as primary, supports English too
  */
 export const defaultVoiceConfig: VoiceRecognitionConfig = {
-  language: 'en-US',
+  language: 'es-ES', // Spanish as default, but patterns support both
   continuous: true,
   interimResults: true,
   maxAlternatives: 1,
@@ -192,7 +193,8 @@ export const defaultVoiceConfig: VoiceRecognitionConfig = {
  * Supported languages for the application
  */
 export const supportedLanguages: SupportedLanguage[] = [
+  { code: 'es-ES', name: 'Español (España)' },
+  { code: 'es-MX', name: 'Español (México)' },
   { code: 'en-US', name: 'English (US)' },
-  { code: 'es-ES', name: 'Spanish (Spain)' },
-  { code: 'es-MX', name: 'Spanish (Mexico)' },
+  { code: 'en-GB', name: 'English (UK)' },
 ];
