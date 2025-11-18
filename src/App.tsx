@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import {
@@ -19,7 +19,7 @@ import {
   InvoicePreview,
   InvoiceFieldGuide,
 } from './components/Invoice';
-import { PDFGenerator } from './components/PDF';
+import { PDFGenerator, type PDFGeneratorHandle } from './components/PDF';
 import { Header } from './components/Layout/Header';
 import type { VoiceCommand, InvoiceData } from './types';
 
@@ -48,6 +48,9 @@ function AppContent() {
   // Voice command processing
   const { processTranscript, commandToAction } = useVoiceCommands();
 
+  // Ref for PDF generator to trigger generation via voice command
+  const pdfGeneratorRef = useRef<PDFGeneratorHandle>(null);
+
   // Track last processed command for UI feedback
   const lastCommand: VoiceCommand | null =
     transcripts.length > 0
@@ -75,6 +78,15 @@ function AppContent() {
     // Parse the transcript into a voice command
     const command = processTranscript(lastTranscript.text);
     if (!command) return;
+
+    // Handle special commands that don't map to invoice actions
+    if (command.type === 'generate_pdf') {
+      // Trigger PDF generation via ref
+      if (pdfGeneratorRef.current) {
+        pdfGeneratorRef.current.generatePDF();
+      }
+      return;
+    }
 
     // Convert command to invoice action
     const action = commandToAction(command);
@@ -297,7 +309,7 @@ function AppContent() {
             <InvoicePreview invoiceData={invoiceData} />
 
             {/* PDF Generator */}
-            <PDFGenerator invoiceData={invoiceData} />
+            <PDFGenerator ref={pdfGeneratorRef} invoiceData={invoiceData} />
           </div>
         </div>
 
