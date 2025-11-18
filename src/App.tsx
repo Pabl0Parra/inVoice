@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import { TabProvider, useTab } from './contexts/TabContext';
 import {
   useSpeechRecognition,
   useInvoiceState,
@@ -21,6 +22,7 @@ import {
 } from './components/Invoice';
 import { PDFGenerator, type PDFGeneratorHandle } from './components/PDF';
 import { Header } from './components/Layout/Header';
+import { Part2Placeholder } from './components/Part2';
 import type { VoiceCommand, InvoiceData } from './types';
 
 /**
@@ -28,6 +30,7 @@ import type { VoiceCommand, InvoiceData } from './types';
  */
 function AppContent() {
   const { t } = useLanguage();
+  const { activeTab } = useTab();
 
   // State management
   const { invoiceData, dispatch, addItem, removeItem, updateItem } =
@@ -149,10 +152,15 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-      {/* Header with language and theme toggles */}
+      {/* Header with language, theme toggles, and tab navigation */}
       <Header />
 
-      <main className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
+      {/* Render Part 2 if active */}
+      {activeTab === 'part2' && <Part2Placeholder />}
+
+      {/* Render Part 1 (Invoice Generator) if active */}
+      {activeTab === 'part1' && (
+        <main className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
         {/* Browser Support Warning */}
         {!isSupported && (
           <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
@@ -346,7 +354,8 @@ function AppContent() {
             </div>
           </div>
         </div>
-      </main>
+        </main>
+      )}
 
       {/* Footer */}
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
@@ -362,12 +371,15 @@ function AppContent() {
 
 /**
  * App wrapper with providers
+ * TabProvider must be inside LanguageProvider to access translations
  */
 function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AppContent />
+        <TabProvider>
+          <AppContent />
+        </TabProvider>
       </LanguageProvider>
     </ThemeProvider>
   );
