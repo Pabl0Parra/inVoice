@@ -110,23 +110,24 @@ function AppContent() {
    * Handle invoice data updates from form
    */
   const handleInvoiceUpdate = (updates: Partial<InvoiceData>): void => {
-    // Handle customer fields specially to avoid losing data
+    // Handle customer fields as a single update to avoid multiple dispatches
     if ('customerName' in updates || 'customerAddress' in updates) {
       dispatch({
         type: 'SET_CUSTOMER',
         payload: {
-          customerName: updates.customerName !== undefined ? updates.customerName : invoiceData.customerName,
-          customerAddress: updates.customerAddress !== undefined ? updates.customerAddress : invoiceData.customerAddress,
+          customerName: updates.customerName ?? '',
+          customerAddress: updates.customerAddress ?? '',
         },
       });
-      // Remove customer fields from updates to avoid processing them again
-      const { customerName, customerAddress, ...otherUpdates } = updates;
-      updates = otherUpdates;
     }
 
     // Process remaining updates
     Object.entries(updates).forEach(([key, value]) => {
       switch (key) {
+        case 'customerName':
+        case 'customerAddress':
+          // Skip - already handled above
+          break;
         case 'invoiceNumber':
           dispatch({ type: 'SET_INVOICE_NUMBER', payload: value as string });
           break;
