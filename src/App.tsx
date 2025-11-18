@@ -110,6 +110,21 @@ function AppContent() {
    * Handle invoice data updates from form
    */
   const handleInvoiceUpdate = (updates: Partial<InvoiceData>): void => {
+    // Handle customer fields specially to avoid losing data
+    if ('customerName' in updates || 'customerAddress' in updates) {
+      dispatch({
+        type: 'SET_CUSTOMER',
+        payload: {
+          customerName: updates.customerName !== undefined ? updates.customerName : invoiceData.customerName,
+          customerAddress: updates.customerAddress !== undefined ? updates.customerAddress : invoiceData.customerAddress,
+        },
+      });
+      // Remove customer fields from updates to avoid processing them again
+      const { customerName, customerAddress, ...otherUpdates } = updates;
+      updates = otherUpdates;
+    }
+
+    // Process remaining updates
     Object.entries(updates).forEach(([key, value]) => {
       switch (key) {
         case 'invoiceNumber':
@@ -120,19 +135,6 @@ function AppContent() {
           break;
         case 'dueDate':
           dispatch({ type: 'SET_DUE_DATE', payload: value as Date });
-          break;
-        case 'customerName':
-        case 'customerAddress':
-          if ('customerName' in updates || 'customerAddress' in updates) {
-            dispatch({
-              type: 'SET_CUSTOMER',
-              payload: {
-                customerName: updates.customerName || invoiceData.customerName,
-                customerAddress:
-                  updates.customerAddress || invoiceData.customerAddress,
-              },
-            });
-          }
           break;
         case 'taxRate':
           dispatch({ type: 'SET_TAX_RATE', payload: value as number });
