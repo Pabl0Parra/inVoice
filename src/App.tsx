@@ -137,7 +137,7 @@ function AppContent() {
       {/* Header with language and theme toggles */}
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
+      <main className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
         {/* Browser Support Warning */}
         {!isSupported && (
           <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
@@ -196,8 +196,11 @@ function AppContent() {
           </div>
         )}
 
-        {/* Responsive Layout: Mobile (1 col) → Tablet (2 col) → Desktop (3 col) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Responsive Layout */}
+        {/* Mobile: Single column stack */}
+        {/* Tablet (768px+): Two columns side-by-side */}
+        {/* Desktop (1280px+): Three columns with better spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
           {/* Left Column: Voice Input & Controls */}
           <div className="space-y-6">
             {/* Voice Control */}
@@ -257,17 +260,18 @@ function AppContent() {
             {/* Manual Add Item Form */}
             <AddItemForm onAddItem={addItem} />
 
-            {/* Invoice Details Form - Show on desktop */}
+            {/* Invoice Details Form - Show on larger screens */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
-              className="hidden lg:block"
+              className="hidden xl:block"
             />
           </div>
 
-          {/* Middle Column: Items List */}
+          {/* Middle Column: Items List & Forms */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            {/* Invoice Items */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-5 lg:p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 {t.invoiceItems}
               </h2>
@@ -279,16 +283,16 @@ function AppContent() {
               />
             </div>
 
-            {/* Invoice Form - Show on tablet/mobile */}
+            {/* Invoice Form - Show on small/medium screens */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
-              className="lg:hidden"
+              className="xl:hidden"
             />
           </div>
 
           {/* Right Column: Preview & PDF */}
-          <div className="md:col-span-2 lg:col-span-1 space-y-6">
+          <div className="space-y-6 md:col-span-2 xl:col-span-1">
             {/* Invoice Preview */}
             <InvoicePreview invoiceData={invoiceData} />
 
