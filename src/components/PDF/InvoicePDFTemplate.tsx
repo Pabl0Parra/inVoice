@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import type { InvoiceData } from '../../types';
+import type { Translations, Language } from '../../locales/translations';
 
 /**
  * Styles for PDF document
@@ -214,18 +215,28 @@ const styles = StyleSheet.create({
 interface InvoicePDFTemplateProps {
   /** Invoice data to render */
   invoiceData: InvoiceData;
+  /** Translations for the current language */
+  translations: Translations;
+  /** Current language */
+  language: Language;
 }
 
 /**
  * PDF Invoice Template using @react-pdf/renderer
  * Creates a professional, print-ready invoice document
+ * Supports Spanish and English
  */
-export const InvoicePDFTemplate = ({ invoiceData }: InvoicePDFTemplateProps) => {
+export const InvoicePDFTemplate = ({
+  invoiceData,
+  translations: t,
+  language,
+}: InvoicePDFTemplateProps) => {
   /**
    * Format date for display
    */
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
+    const locale = language === 'es' ? 'es-ES' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -237,27 +248,27 @@ export const InvoicePDFTemplate = ({ invoiceData }: InvoicePDFTemplateProps) => 
       <Page size="A4" style={styles.page}>
         {/* Company Header */}
         <View style={styles.header}>
-          <Text style={styles.companyName}>Your Company Name</Text>
+          <Text style={styles.companyName}>{t.pdfCompanyName}</Text>
           <Text style={styles.companyInfo}>
-            123 Business Street{'\n'}
-            City, State 12345{'\n'}
-            Phone: (555) 123-4567{'\n'}
-            Email: info@company.com
+            {t.pdfCompanyAddress}{'\n'}
+            {language === 'es' ? 'Ciudad, Estado 12345' : 'City, State 12345'}{'\n'}
+            {t.pdfCompanyPhone}: (555) 123-4567{'\n'}
+            {t.pdfCompanyEmail}: info@{language === 'es' ? 'empresa' : 'company'}.com
           </Text>
         </View>
 
         {/* Invoice Header */}
         <View style={styles.invoiceHeader}>
-          <Text style={styles.invoiceTitle}>INVOICE</Text>
+          <Text style={styles.invoiceTitle}>{t.pdfInvoiceTitle}</Text>
           <View style={styles.invoiceMetaRow}>
             <View style={styles.metaBlock}>
-              <Text style={styles.metaLabel}>Invoice Number</Text>
+              <Text style={styles.metaLabel}>{t.invoiceNumber}</Text>
               <Text style={styles.metaValue}>
                 {invoiceData.invoiceNumber || 'N/A'}
               </Text>
             </View>
             <View style={styles.metaBlock}>
-              <Text style={styles.metaLabel}>Invoice Date</Text>
+              <Text style={styles.metaLabel}>{t.invoiceDate}</Text>
               <Text style={styles.metaValue}>
                 {formatDate(invoiceData.date)}
               </Text>
@@ -267,17 +278,17 @@ export const InvoicePDFTemplate = ({ invoiceData }: InvoicePDFTemplateProps) => 
 
         {/* Bill To Section */}
         <View style={styles.billToSection}>
-          <Text style={styles.sectionTitle}>Bill To</Text>
+          <Text style={styles.sectionTitle}>{t.pdfBillTo}</Text>
           <View style={styles.billToBox}>
             <Text style={styles.customerName}>
-              {invoiceData.customerName || 'Customer Name'}
+              {invoiceData.customerName || (language === 'es' ? 'Nombre del Cliente' : 'Customer Name')}
             </Text>
             <Text style={styles.customerAddress}>
-              {invoiceData.customerAddress || 'Customer Address'}
+              {invoiceData.customerAddress || (language === 'es' ? 'Dirección del Cliente' : 'Customer Address')}
             </Text>
           </View>
           <View style={styles.dueDate}>
-            <Text style={styles.dueDateLabel}>Due Date</Text>
+            <Text style={styles.dueDateLabel}>{t.dueDate}</Text>
             <Text style={styles.dueDateValue}>
               {formatDate(invoiceData.dueDate)}
             </Text>
@@ -288,10 +299,10 @@ export const InvoicePDFTemplate = ({ invoiceData }: InvoicePDFTemplateProps) => 
         <View style={styles.table}>
           {/* Table Header */}
           <View style={styles.tableHeader}>
-            <Text style={styles.colDescription}>Description</Text>
-            <Text style={styles.colQuantity}>Qty</Text>
-            <Text style={styles.colPrice}>Unit Price</Text>
-            <Text style={styles.colTotal}>Total</Text>
+            <Text style={styles.colDescription}>{t.description}</Text>
+            <Text style={styles.colQuantity}>{t.pdfQty}</Text>
+            <Text style={styles.colPrice}>{t.unitPrice}</Text>
+            <Text style={styles.colTotal}>{t.total}</Text>
           </View>
 
           {/* Table Rows */}
@@ -315,21 +326,21 @@ export const InvoicePDFTemplate = ({ invoiceData }: InvoicePDFTemplateProps) => 
         <View style={styles.totalsSection}>
           <View style={styles.totalsBox}>
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Subtotal</Text>
+              <Text style={styles.totalLabel}>{t.subtotal}</Text>
               <Text style={styles.totalValue}>
                 ${invoiceData.subtotal.toFixed(2)}
               </Text>
             </View>
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>
-                Tax ({(invoiceData.taxRate * 100).toFixed(1)}%)
+                {t.tax} ({(invoiceData.taxRate * 100).toFixed(1)}%)
               </Text>
               <Text style={styles.totalValue}>
                 ${invoiceData.tax.toFixed(2)}
               </Text>
             </View>
             <View style={styles.grandTotalRow}>
-              <Text style={styles.grandTotalLabel}>Total Due</Text>
+              <Text style={styles.grandTotalLabel}>{t.pdfTotalDue}</Text>
               <Text style={styles.grandTotalValue}>
                 ${invoiceData.total.toFixed(2)}
               </Text>
@@ -340,16 +351,16 @@ export const InvoicePDFTemplate = ({ invoiceData }: InvoicePDFTemplateProps) => 
         {/* Notes Section */}
         {invoiceData.notes && (
           <View style={styles.notesSection}>
-            <Text style={styles.notesTitle}>Notes</Text>
+            <Text style={styles.notesTitle}>{t.notes}</Text>
             <Text style={styles.notesText}>{invoiceData.notes}</Text>
           </View>
         )}
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Thank you for your business!</Text>
+          <Text style={styles.footerText}>{t.pdfThankYou}</Text>
           <Text style={styles.footerSubtext}>
-            Please make payment by the due date. For questions, contact us at info@company.com
+            {t.pdfPaymentInstructions}
           </Text>
         </View>
       </Page>

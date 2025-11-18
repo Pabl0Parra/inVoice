@@ -1,6 +1,7 @@
 import { pdf } from '@react-pdf/renderer';
 import { InvoicePDFTemplate } from '../components/PDF';
 import type { InvoiceData } from '../types';
+import type { Translations, Language } from '../locales/translations';
 
 /**
  * PDF generation utilities
@@ -24,14 +25,24 @@ export const generatePDFFilename = (invoiceData: InvoiceData): string => {
  * Generate invoice PDF using @react-pdf/renderer
  *
  * @param invoiceData - Invoice data to generate PDF from
+ * @param translations - Translations for the current language
+ * @param language - Current language
  * @returns Promise that resolves to PDF blob
  */
 export const generateInvoicePDF = async (
-  invoiceData: InvoiceData
+  invoiceData: InvoiceData,
+  translations: Translations,
+  language: Language
 ): Promise<Blob> => {
   try {
     // Create PDF document from template
-    const pdfDocument = <InvoicePDFTemplate invoiceData={invoiceData} />;
+    const pdfDocument = (
+      <InvoicePDFTemplate
+        invoiceData={invoiceData}
+        translations={translations}
+        language={language}
+      />
+    );
 
     // Generate blob
     const blob = await pdf(pdfDocument).toBlob();
@@ -71,13 +82,17 @@ export const downloadBlob = (blob: Blob, filename: string): void => {
  * Generate and download invoice PDF
  *
  * @param invoiceData - Invoice data
+ * @param translations - Translations for the current language
+ * @param language - Current language
  * @returns Promise that resolves when download is complete
  */
 export const generateAndDownloadPDF = async (
-  invoiceData: InvoiceData
+  invoiceData: InvoiceData,
+  translations: Translations,
+  language: Language
 ): Promise<void> => {
   const filename = generatePDFFilename(invoiceData);
-  const pdfBlob = await generateInvoicePDF(invoiceData);
+  const pdfBlob = await generateInvoicePDF(invoiceData, translations, language);
   downloadBlob(pdfBlob, filename);
 };
 

@@ -26,7 +26,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
   invoiceData,
   className = '',
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [status, setStatus] = useState<PDFStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -45,7 +45,7 @@ export const PDFGenerator: FC<PDFGeneratorProps> = ({
       }
 
       // Generate and download PDF
-      await generateAndDownloadPDF(invoiceData);
+      await generateAndDownloadPDF(invoiceData, t, language);
 
       setStatus('success');
 

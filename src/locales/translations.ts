@@ -57,6 +57,18 @@ export interface Translations {
   generatePDF: string;
   generating: string;
 
+  // PDF Template
+  pdfInvoiceTitle: string;
+  pdfBillTo: string;
+  pdfQty: string;
+  pdfTotalDue: string;
+  pdfThankYou: string;
+  pdfPaymentInstructions: string;
+  pdfCompanyName: string;
+  pdfCompanyAddress: string;
+  pdfCompanyPhone: string;
+  pdfCompanyEmail: string;
+
   // Voice Commands Help
   voiceCommandsHelp: string;
   commandExamples: string;
@@ -128,6 +140,18 @@ export const translations: Record<Language, Translations> = {
     generatePDF: 'Generar PDF',
     generating: 'Generando...',
 
+    // PDF Template
+    pdfInvoiceTitle: 'FACTURA',
+    pdfBillTo: 'Facturar a',
+    pdfQty: 'Cant.',
+    pdfTotalDue: 'Total a Pagar',
+    pdfThankYou: '¡Gracias por su preferencia!',
+    pdfPaymentInstructions: 'Por favor realice el pago antes de la fecha de vencimiento. Para consultas, contáctenos a info@empresa.com',
+    pdfCompanyName: 'Tu Empresa',
+    pdfCompanyAddress: 'Calle Principal 123',
+    pdfCompanyPhone: 'Teléfono',
+    pdfCompanyEmail: 'Email',
+
     // Voice Commands Help
     voiceCommandsHelp: 'Ayuda de Comandos de Voz',
     commandExamples: 'Ejemplos de comandos',
@@ -197,6 +221,18 @@ export const translations: Record<Language, Translations> = {
     // PDF
     generatePDF: 'Generate PDF',
     generating: 'Generating...',
+
+    // PDF Template
+    pdfInvoiceTitle: 'INVOICE',
+    pdfBillTo: 'Bill To',
+    pdfQty: 'Qty',
+    pdfTotalDue: 'Total Due',
+    pdfThankYou: 'Thank you for your business!',
+    pdfPaymentInstructions: 'Please make payment by the due date. For questions, contact us at info@company.com',
+    pdfCompanyName: 'Your Company Name',
+    pdfCompanyAddress: '123 Business Street',
+    pdfCompanyPhone: 'Phone',
+    pdfCompanyEmail: 'Email',
 
     // Voice Commands Help
     voiceCommandsHelp: 'Voice Commands Help',
