@@ -22,11 +22,27 @@ interface CommandPattern {
 /**
  * Command patterns for parsing voice input
  * Supports English and Spanish
+ * Optimized for commercial painting company terminology
  * Order matters - more specific patterns should come first
  */
 const commandPatterns: CommandPattern[] = [
-  // Add item - English: "Add 5 laptops at 20" / "Add laptop at 20 dollars"
-  // Add item - Spanish: "Añadir 5 laptops a 20" / "Agregar laptop a 20 dólares"
+  // Add item with units - Painting specific
+  // English: "Add 500 square feet exterior painting at 3.50"
+  // Spanish: "Añadir 500 pies cuadrados pintura exterior a 3.50"
+  {
+    pattern: /(?:add|añadir|agregar|a[ñn]ade)\s+(\d+(?:[.,]\d+)?)\s+(square feet|sq ft|pies cuadrados|metros cuadrados|gallons?|galones?|hours?|horas?)\s+(?:of\s+|de\s+)?(.+?)\s+(?:at|a)\s+\$?(\d+(?:[.,]\d{1,2})?)/i,
+    type: 'add_item',
+    extractPayload: (matches) => ({
+      quantity: parseFloat(matches[1].replace(',', '.')),
+      description: `${matches[3].trim()} (${matches[2]})`,
+      unitPrice: parseFloat(matches[4].replace(',', '.')),
+    }),
+    description: 'Add painting item with units (sq ft, gallons, hours)',
+  },
+
+  // Add item - Standard format with quantity
+  // English: "Add 5 gallons premium paint at 45"
+  // Spanish: "Añadir 5 galones pintura premium a 45"
   {
     pattern: /(?:add|añadir|agregar|a[ñn]ade)\s+(?:(\d+)\s+)?(?:units?\s+of\s+|unidades?\s+de\s+)?(.+?)\s+(?:at|a)\s+\$?(\d+(?:[.,]\d{1,2})?)/i,
     type: 'add_item',
@@ -38,7 +54,7 @@ const commandPatterns: CommandPattern[] = [
     description: 'Add item with quantity and price',
   },
 
-  // Add item - simpler pattern: "Add laptop 20" / "Añadir laptop 20"
+  // Add item - simpler pattern: "Add labor 65" / "Añadir mano de obra 65"
   {
     pattern: /(?:add|añadir|agregar|a[ñn]ade)\s+(.+?)\s+(\d+(?:[.,]\d{1,2})?)/i,
     type: 'add_item',
@@ -50,8 +66,9 @@ const commandPatterns: CommandPattern[] = [
     description: 'Add item simplified',
   },
 
-  // Customer name - English: "Customer is John" / "Customer name is John"
-  // Customer name - Spanish: "Cliente es John" / "Nombre del cliente es John"
+  // Customer name - Commercial buildings/companies
+  // English: "Customer is Central Tower Building" / "Customer name is ABC Corp"
+  // Spanish: "Cliente es Edificio Torre Central" / "Nombre del cliente Constructora XYZ"
   {
     pattern: /(?:customer|cliente)(?:\s+name|\s+nombre)?\s+(?:is|es)\s+(.+)/i,
     type: 'update_customer',
@@ -59,7 +76,7 @@ const commandPatterns: CommandPattern[] = [
       customerName: matches[1].trim(),
       customerAddress: '',
     }),
-    description: 'Set customer name',
+    description: 'Set customer name (buildings/companies)',
   },
 
   // Customer address - English: "Address is 123 Main"

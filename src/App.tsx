@@ -199,8 +199,8 @@ function AppContent() {
         {/* Responsive Layout */}
         {/* Mobile: Single column stack */}
         {/* Tablet (768px+): Two columns side-by-side */}
-        {/* Desktop (1280px+): Three columns with better spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
+        {/* Desktop (1280px+): Single column centered */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4 md:gap-5 lg:gap-6 xl:max-w-5xl xl:mx-auto">
           {/* Left Column: Voice Input & Controls */}
           <div className="space-y-6">
             {/* Voice Control */}
@@ -260,11 +260,11 @@ function AppContent() {
             {/* Manual Add Item Form */}
             <AddItemForm onAddItem={addItem} />
 
-            {/* Invoice Details Form - Show on larger screens */}
+            {/* Invoice Details Form - Show on tablet and desktop */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
-              className="hidden xl:block"
+              className="hidden md:block"
             />
           </div>
 
@@ -283,11 +283,11 @@ function AppContent() {
               />
             </div>
 
-            {/* Invoice Form - Show on small/medium screens */}
+            {/* Invoice Form - Show on mobile only */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
-              className="xl:hidden"
+              className="md:hidden"
             />
           </div>
 
@@ -306,24 +306,28 @@ function AppContent() {
           <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">
             {t.voiceCommandsHelp}
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-blue-800 dark:text-blue-300">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm text-blue-800 dark:text-blue-300">
             <div>
               <p className="font-medium mb-2">{t.commandExamples}:</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
                 <li>"{t.addItemCommand}"</li>
+                <li>"{t.addItemCommand2}"</li>
+                <li>"{t.addItemCommand3}"</li>
               </ul>
             </div>
-            <div>
-              <p className="font-medium mb-2">{t.customerName}:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
-                <li>"{t.customerCommand}"</li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-medium mb-2">{t.tax}:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
-                <li>"{t.taxCommand}"</li>
-              </ul>
+            <div className="space-y-3">
+              <div>
+                <p className="font-medium mb-1">{t.customerName}:</p>
+                <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                  <li>"{t.customerCommand}"</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium mb-1">{t.tax}:</p>
+                <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-400">
+                  <li>"{t.taxCommand}"</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

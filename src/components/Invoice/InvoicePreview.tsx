@@ -1,4 +1,5 @@
 import { type FC } from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import type { InvoiceData } from '../../types';
 
 /**
@@ -14,16 +15,20 @@ interface InvoicePreviewProps {
 /**
  * Real-time preview of the invoice in PDF-like format
  * Responsive layout that adapts to screen size
+ * Supports dark mode and bilingual display
  */
 export const InvoicePreview: FC<InvoicePreviewProps> = ({
   invoiceData,
   className = '',
 }) => {
+  const { t, language } = useLanguage();
+
   /**
-   * Format date for display
+   * Format date for display based on current language
    */
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
+    const locale = language === 'es' ? 'es-ES' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -32,16 +37,16 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg p-4 md:p-6 lg:p-8 ${className}`}
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 lg:p-8 ${className}`}
       aria-label="Invoice preview"
     >
       {/* Header */}
-      <div className="border-b-2 border-gray-300 pb-4 md:pb-6 mb-4 md:mb-6">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-          INVOICE
+      <div className="border-b-2 border-gray-300 dark:border-gray-600 pb-4 md:pb-6 mb-4 md:mb-6">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+          {t.pdfInvoiceTitle}
         </h1>
-        <p className="text-xs md:text-sm text-gray-600 mt-2">
-          {invoiceData.invoiceNumber || 'No invoice number'}
+        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-2">
+          {invoiceData.invoiceNumber || (language === 'es' ? 'Sin número de factura' : 'No invoice number')}
         </p>
       </div>
 
@@ -49,19 +54,19 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
         {/* Invoice Details */}
         <div>
-          <h2 className="text-xs md:text-sm font-semibold text-gray-700 mb-2">
-            Invoice Details
+          <h2 className="text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            {t.invoiceDetails}
           </h2>
           <div className="text-xs md:text-sm space-y-1">
             <p>
-              <span className="text-gray-600">Date:</span>{' '}
-              <span className="text-gray-900">
+              <span className="text-gray-600 dark:text-gray-400">{t.invoiceDate}:</span>{' '}
+              <span className="text-gray-900 dark:text-white">
                 {formatDate(invoiceData.date)}
               </span>
             </p>
             <p>
-              <span className="text-gray-600">Due Date:</span>{' '}
-              <span className="text-gray-900">
+              <span className="text-gray-600 dark:text-gray-400">{t.dueDate}:</span>{' '}
+              <span className="text-gray-900 dark:text-white">
                 {formatDate(invoiceData.dueDate)}
               </span>
             </p>
@@ -70,15 +75,15 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
 
         {/* Customer Details */}
         <div>
-          <h2 className="text-xs md:text-sm font-semibold text-gray-700 mb-2">
-            Bill To
+          <h2 className="text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            {t.pdfBillTo}
           </h2>
           <div className="text-xs md:text-sm">
-            <p className="font-medium text-gray-900">
-              {invoiceData.customerName || 'Customer name'}
+            <p className="font-medium text-gray-900 dark:text-white">
+              {invoiceData.customerName || (language === 'es' ? 'Nombre del cliente' : 'Customer name')}
             </p>
-            <p className="text-gray-600 mt-1 whitespace-pre-line">
-              {invoiceData.customerAddress || 'Customer address'}
+            <p className="text-gray-600 dark:text-gray-400 mt-1 whitespace-pre-line">
+              {invoiceData.customerAddress || (language === 'es' ? 'Dirección del cliente' : 'Customer address')}
             </p>
           </div>
         </div>
@@ -88,18 +93,18 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
       <div className="mb-6 md:mb-8 overflow-x-auto">
         <table className="w-full min-w-full">
           <thead>
-            <tr className="border-b-2 border-gray-300">
-              <th className="text-left py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700">
-                Description
+            <tr className="border-b-2 border-gray-300 dark:border-gray-600">
+              <th className="text-left py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                {t.description}
               </th>
-              <th className="text-center py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 w-16 md:w-20">
-                Qty
+              <th className="text-center py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 w-16 md:w-20">
+                {t.pdfQty}
               </th>
-              <th className="text-right py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 w-20 md:w-24">
-                Unit Price
+              <th className="text-right py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 w-20 md:w-24">
+                {t.unitPrice}
               </th>
-              <th className="text-right py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 w-20 md:w-24">
-                Total
+              <th className="text-right py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 w-20 md:w-24">
+                {t.total}
               </th>
             </tr>
           </thead>
@@ -108,24 +113,24 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
               <tr>
                 <td
                   colSpan={4}
-                  className="text-center py-8 text-gray-400 text-xs md:text-sm"
+                  className="text-center py-8 text-gray-400 dark:text-gray-500 text-xs md:text-sm"
                 >
-                  No items added yet
+                  {t.noItemsYet}
                 </td>
               </tr>
             ) : (
               invoiceData.items.map((item) => (
-                <tr key={item.id} className="border-b border-gray-200">
-                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900">
+                <tr key={item.id} className="border-b border-gray-200 dark:border-gray-700">
+                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 dark:text-white">
                     {item.description}
                   </td>
-                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 text-center">
+                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 dark:text-white text-center">
                     {item.quantity}
                   </td>
-                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 text-right">
+                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 dark:text-white text-right">
                     ${item.unitPrice.toFixed(2)}
                   </td>
-                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 text-right font-medium">
+                  <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 dark:text-white text-right font-medium">
                     ${item.total.toFixed(2)}
                   </td>
                 </tr>
@@ -139,22 +144,22 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
       <div className="flex justify-end">
         <div className="w-full sm:w-64 space-y-2">
           <div className="flex justify-between text-xs md:text-sm">
-            <span className="text-gray-600">Subtotal:</span>
-            <span className="text-gray-900 font-medium">
+            <span className="text-gray-600 dark:text-gray-400">{t.subtotal}:</span>
+            <span className="text-gray-900 dark:text-white font-medium">
               ${invoiceData.subtotal.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between text-xs md:text-sm">
-            <span className="text-gray-600">
-              Tax ({(invoiceData.taxRate * 100).toFixed(1)}%):
+            <span className="text-gray-600 dark:text-gray-400">
+              {t.tax} ({(invoiceData.taxRate * 100).toFixed(1)}%):
             </span>
-            <span className="text-gray-900 font-medium">
+            <span className="text-gray-900 dark:text-white font-medium">
               ${invoiceData.tax.toFixed(2)}
             </span>
           </div>
-          <div className="flex justify-between text-base md:text-lg font-bold pt-2 border-t-2 border-gray-300">
-            <span className="text-gray-900">Total:</span>
-            <span className="text-blue-600">
+          <div className="flex justify-between text-base md:text-lg font-bold pt-2 border-t-2 border-gray-300 dark:border-gray-600">
+            <span className="text-gray-900 dark:text-white">{t.total}:</span>
+            <span className="text-blue-600 dark:text-blue-400">
               ${invoiceData.total.toFixed(2)}
             </span>
           </div>
@@ -163,11 +168,11 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
 
       {/* Notes */}
       {invoiceData.notes && (
-        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200">
-          <h3 className="text-xs md:text-sm font-semibold text-gray-700 mb-2">
-            Notes
+        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            {t.notes}
           </h3>
-          <p className="text-xs md:text-sm text-gray-600 whitespace-pre-line">
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
             {invoiceData.notes}
           </p>
         </div>
