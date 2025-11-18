@@ -199,8 +199,8 @@ function AppContent() {
         {/* Responsive Layout */}
         {/* Mobile: Single column stack */}
         {/* Tablet (768px+): Two columns side-by-side */}
-        {/* Desktop (1280px+): Three columns with better spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
+        {/* Desktop (1280px+): Single column centered */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4 md:gap-5 lg:gap-6 xl:max-w-5xl xl:mx-auto">
           {/* Left Column: Voice Input & Controls */}
           <div className="space-y-6">
             {/* Voice Control */}
@@ -260,11 +260,11 @@ function AppContent() {
             {/* Manual Add Item Form */}
             <AddItemForm onAddItem={addItem} />
 
-            {/* Invoice Details Form - Show on larger screens */}
+            {/* Invoice Details Form - Show on tablet and desktop */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
-              className="hidden xl:block"
+              className="hidden md:block"
             />
           </div>
 
@@ -283,11 +283,11 @@ function AppContent() {
               />
             </div>
 
-            {/* Invoice Form - Show on small/medium screens */}
+            {/* Invoice Form - Show on mobile only */}
             <InvoiceForm
               invoiceData={invoiceData}
               onUpdate={handleInvoiceUpdate}
-              className="xl:hidden"
+              className="md:hidden"
             />
           </div>
 
