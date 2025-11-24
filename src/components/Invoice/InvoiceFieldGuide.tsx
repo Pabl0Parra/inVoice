@@ -142,13 +142,13 @@ export const InvoiceFieldGuide: FC<InvoiceFieldGuideProps> = ({
                 onClick={() => hasCommands && toggleField(field.name)}
               >
                 {field.isComplete ? (
-                  <span className="text-green-500 flex-shrink-0">✓</span>
+                  <span className="text-green-500 shrink-0">✓</span>
                 ) : field.isRequired ? (
-                  <span className="text-gray-400 dark:text-gray-600 flex-shrink-0">
+                  <span className="text-gray-400 dark:text-gray-600 shrink-0">
                     ○
                   </span>
                 ) : (
-                  <span className="text-gray-300 dark:text-gray-700 flex-shrink-0">
+                  <span className="text-gray-300 dark:text-gray-700 shrink-0">
                     ○
                   </span>
                 )}
@@ -156,12 +156,12 @@ export const InvoiceFieldGuide: FC<InvoiceFieldGuideProps> = ({
                   {field.icon} {field.label}
                 </span>
                 {field.isRequired && !field.isComplete && (
-                  <span className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 py-0.5 rounded flex-shrink-0">
+                  <span className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 py-0.5 rounded shrink-0">
                     {language === 'es' ? 'Requerido' : 'Required'}
                   </span>
                 )}
                 {showVoiceCommands && hasCommands && (
-                  <span className="text-gray-400 dark:text-gray-500 text-xs flex-shrink-0">
+                  <span className="text-gray-400 dark:text-gray-500 text-xs shrink-0">
                     {isExpanded ? '▼' : '▶'}
                   </span>
                 )}
