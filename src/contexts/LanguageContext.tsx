@@ -14,19 +14,11 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('language');
-    return (saved === 'en' || saved === 'es') ? saved : 'es';
-  });
-
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('language', lang);
-  };
+  const [language, setLanguage] = useState<Language>('es');
 
   const value: LanguageContextType = {
     language,
-    setLanguage: handleSetLanguage,
+    setLanguage,
     t: translations[language],
   };
 
