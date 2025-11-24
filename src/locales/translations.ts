@@ -87,6 +87,7 @@ export interface Translations {
   // Voice Commands Help
   voiceCommandsHelp: string;
   commandExamples: string;
+
   addItemCommand: string;
   addItemCommand2: string;
   addItemCommand3: string;
@@ -97,6 +98,22 @@ export interface Translations {
   error: string;
   required: string;
   invalidNumber: string;
+
+  // Landing Page
+  landingTitlePrefix: string;
+  landingTitleHighlight: string;
+  landingSubtitle: string;
+  launchApp: string;
+
+  // Features
+  featureVoiceTitle: string;
+  featureVoiceDesc: string;
+  featureExtractionTitle: string;
+  featureExtractionDesc: string;
+  featurePdfTitle: string;
+  featurePdfDesc: string;
+  featureMultiLangTitle: string;
+  featureMultiLangDesc: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -197,6 +214,22 @@ export const translations: Record<Language, Translations> = {
     error: 'Error',
     required: 'Requerido',
     invalidNumber: 'Número inválido',
+
+    // Landing Page
+    landingTitlePrefix: 'Facturación',
+    landingTitleHighlight: 'por Voz',
+    landingSubtitle: 'Crea facturas profesionales solo con tu voz. El futuro de la facturación está aquí.',
+    launchApp: 'Iniciar App',
+
+    // Features
+    featureVoiceTitle: 'Control por Voz',
+    featureVoiceDesc: 'Habla naturalmente para crear facturas al instante.',
+    featureExtractionTitle: 'Extracción Inteligente',
+    featureExtractionDesc: 'IA detecta automáticamente artículos, precios y fechas.',
+    featurePdfTitle: 'PDF Instantáneo',
+    featurePdfDesc: 'Genera PDFs profesionales con un solo comando.',
+    featureMultiLangTitle: 'Multi-Idioma',
+    featureMultiLangDesc: 'Soporte para Inglés y Español incluido.',
   },
 
   en: {
@@ -296,5 +329,21 @@ export const translations: Record<Language, Translations> = {
     error: 'Error',
     required: 'Required',
     invalidNumber: 'Invalid number',
+
+    // Landing Page
+    landingTitlePrefix: 'Voice-Powered',
+    landingTitleHighlight: 'Invoicing',
+    landingSubtitle: 'Create professional invoices with just your voice. The future of billing is here.',
+    launchApp: 'Launch App',
+    
+    // Features
+    featureVoiceTitle: 'Voice-Powered',
+    featureVoiceDesc: 'Speak naturally to create invoices instantly.',
+    featureExtractionTitle: 'Smart Extraction',
+    featureExtractionDesc: 'AI automatically detects items, prices, and dates.',
+    featurePdfTitle: 'Instant PDF',
+    featurePdfDesc: 'Generate professional PDFs with a single command.',
+    featureMultiLangTitle: 'Multi-Language',
+    featureMultiLangDesc: 'Support for English and Spanish out of the box.',
   },
 };

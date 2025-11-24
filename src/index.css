@@ -2,6 +2,17 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/* Prevent scrollbar jump and height collapse during transitions */
+html {
+  overflow-y: scroll;
+}
+
+body, #root {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: black;
+}
+
 @theme {
   /* Your custom theme configuration goes here */
   --font-family-sans: Nunito, ui-sans-serif, system-ui, -apple-system,
