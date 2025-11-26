@@ -1,9 +1,23 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { FeatureCarousel } from '../components/Landing/FeatureCarousel';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export function LandingPage() {
   const navigate = useNavigate();
+  const { language, setLanguage, t } = useLanguage();
+
+  const particles = useMemo(() => {
+    return Array.from({ length: 50 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 200 - 100,
+      y: Math.random() * 200 - 100,
+      duration: 1 + Math.random() * 2,
+      left: Math.random() * 100,
+      top: Math.random() * 100
+    }));
+  }, []);
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden font-sans selection:bg-blue-500 selection:text-white">
@@ -12,6 +26,32 @@ export function LandingPage() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.4),rgba(0,0,0,1))]" />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px] animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[128px] animate-pulse delay-1000" />
+      </div>
+
+      {/* Language Toggle */}
+      <div className="absolute top-6 right-6 z-50 flex gap-4">
+        <button
+          onClick={() => setLanguage('es')}
+          className={`text-4xl transition-all duration-300 hover:scale-110 ${
+            language === 'es' 
+              ? 'opacity-100 scale-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]' 
+              : 'opacity-40 hover:opacity-70 grayscale'
+          }`}
+          aria-label="Switch to Spanish"
+        >
+          🇪🇸
+        </button>
+        <button
+          onClick={() => setLanguage('en')}
+          className={`text-4xl transition-all duration-300 hover:scale-110 ${
+            language === 'en' 
+              ? 'opacity-100 scale-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]' 
+              : 'opacity-40 hover:opacity-70 grayscale'
+          }`}
+          aria-label="Switch to English"
+        >
+          🇬🇧
+        </button>
       </div>
 
       {/* Content Container */}
@@ -25,12 +65,11 @@ export function LandingPage() {
           className="text-center mb-12 mt-auto"
         >
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
-            Voice-Powered <br />
-            <span className="text-blue-500">Invoicing</span>
+            {t.landingTitlePrefix} <br />
+            <span className="text-blue-500">{t.landingTitleHighlight}</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto font-light">
-            Create professional invoices with just your voice. 
-            The future of billing is here.
+            {t.landingSubtitle}
           </p>
         </motion.div>
 
@@ -42,10 +81,10 @@ export function LandingPage() {
           whileTap={{ scale: 0.95 }}
           transition={{ delay: 0.4, duration: 0.3 }}
           onClick={() => navigate('/app')}
-          className="group relative px-8 py-4 bg-white text-black rounded-full font-bold text-lg tracking-wide overflow-hidden mb-auto"
+          className="btn magnetic rounded-full mb-auto"
         >
           <span className="relative z-10 flex items-center gap-2">
-            Launch App
+            {t.launchApp}
             <svg 
               className="w-5 h-5 transition-transform group-hover:translate-x-1" 
               fill="none" 
@@ -55,7 +94,21 @@ export function LandingPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </span>
-          <div className="absolute inset-0 bg-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+          <div className="particles-field" id="particleField">
+            {particles.map((p) => (
+              <div
+                key={p.id}
+                className="particle"
+                style={{
+                  '--x': `${p.x}px`,
+                  '--y': `${p.y}px`,
+                  animation: `particleFloat ${p.duration}s infinite`,
+                  left: `${p.left}%`,
+                  top: `${p.top}%`
+                } as React.CSSProperties}
+              />
+            ))}
+          </div>
         </motion.button>
 
         {/* Feature Carousel */}

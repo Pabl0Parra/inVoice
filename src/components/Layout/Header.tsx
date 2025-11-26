@@ -14,12 +14,12 @@ export const Header: FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo/Title */}
           <div className="flex items-center">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              🎤 {t.appTitle}
+              {t.appTitle}
             </h1>
           </div>
 
@@ -56,16 +56,33 @@ export const Header: FC = () => {
           {/* Controls */}
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Language Toggle */}
-            <button
-              onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-                bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300
-                hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              aria-label="Toggle language"
-            >
-              <span className="text-lg">{language === 'es' ? '🇪🇸' : '🇺🇸'}</span>
-              <span className="hidden sm:inline">{language === 'es' ? 'ES' : 'EN'}</span>
-            </button>
+            {/* Language Toggle */}
+            <div className="flex items-center gap-4 mr-4">
+              <button
+                onClick={() => setLanguage('es')}
+                className={`flex items-center gap-1 text-lg transition-all duration-300 hover:scale-110 ${
+                  language === 'es' 
+                    ? 'opacity-100 scale-110 drop-shadow-md' 
+                    : 'opacity-40 hover:opacity-70 grayscale'
+                }`}
+                aria-label="Switch to Spanish"
+              >
+                <span className="text-2xl">🇪🇸</span>
+                <span className="text-sm font-bold text-gray-900 dark:text-white">ES</span>
+              </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`flex items-center gap-1 text-lg transition-all duration-300 hover:scale-110 ${
+                  language === 'en' 
+                    ? 'opacity-100 scale-110 drop-shadow-md' 
+                    : 'opacity-40 hover:opacity-70 grayscale'
+                }`}
+                aria-label="Switch to English"
+              >
+                <span className="text-2xl">🇬🇧</span>
+                <span className="text-sm font-bold text-gray-900 dark:text-white">EN</span>
+              </button>
+            </div>
 
             {/* Theme Toggle */}
             <button

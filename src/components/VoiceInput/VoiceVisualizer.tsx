@@ -141,10 +141,10 @@ export const VoiceVisualizer: FC<VoiceVisualizerProps> = ({
   }
 
   return (
-    <div className={`flex justify-center items-center ${className}`}>
+    <div className={`flex justify-center items-center ml-[60px] ${className}`}>
       <canvas
         ref={canvasRef}
-        width={200}
+        width={400}
         height={50}
         className="rounded"
       />

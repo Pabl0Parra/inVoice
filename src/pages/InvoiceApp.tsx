@@ -222,78 +222,110 @@ function AppContent() {
           {/* Mobile: Single column stack */}
           {/* Tablet (768px+): Two columns side-by-side */}
           {/* Desktop (1280px+): Single column centered */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-4 md:gap-5 lg:gap-6 xl:max-w-5xl xl:mx-auto">
-            {/* Left Column: Voice Input & Controls */}
-            <div className="space-y-6">
-              {/* Voice Control */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  {t.voiceInput}
-                </h2>
+          {/* Responsive Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 max-w-[1920px] mx-auto">
+            {/* Left Column: Editor (Voice, Forms, List) */}
+            <div className="lg:col-span-7 xl:col-span-7 space-y-6">
+              {/* Voice Control Section - Full Width Card */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-all hover:shadow-xl">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                      {t.voiceInput}
+                    </h2>
+                    <div className="flex items-center gap-2">
+                       {/* Status Indicator */}
+                       <div className={`w-2 h-2 rounded-full ${
+                          voiceStatus === 'listening' ? 'bg-red-500 animate-pulse' : 
+                          voiceStatus === 'processing' ? 'bg-yellow-500' : 'bg-gray-300'
+                       }`} />
+                       <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          {voiceStatus}
+                       </span>
+                    </div>
+                  </div>
 
-                {/* Microphone Button */}
-                <div className="flex justify-center mb-4">
-                  <MicrophoneButton
-                    status={voiceStatus}
-                    onToggle={handleToggleVoice}
-                  />
+                  {/* Microphone & Visualizer */}
+                  <div className={`relative flex flex-col items-center justify-center transition-all duration-500 ease-in-out bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 mb-6 overflow-hidden ${
+                    voiceStatus === 'listening' ? 'h-64' : 'h-40'
+                  }`}>
+                    <div className={`transition-all duration-500 z-10 ${
+                      voiceStatus === 'listening' ? 'scale-125 -translate-y-4' : 'scale-100'
+                    }`}>
+                      <MicrophoneButton
+                        status={voiceStatus}
+                        onToggle={handleToggleVoice}
+                      />
+                    </div>
+                    
+                    {/* Visualizer Container */}
+                    <div className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ${
+                      voiceStatus === 'listening' ? 'h-32 opacity-100' : 'h-12 opacity-30'
+                    }`}>
+                       <VoiceVisualizer status={voiceStatus} className="w-full h-full" />
+                    </div>
+                  </div>
+
+                  {/* Transcription & Feedback */}
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 dark:bg-gray-900/30 rounded-xl p-4 min-h-[100px] border border-gray-100 dark:border-gray-700">
+                       <TranscriptionDisplay
+                        segments={transcripts}
+                        interimTranscript={interimTranscript}
+                      />
+                    </div>
+                    
+                    {lastCommand && (
+                      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <VoiceCommandProcessor lastCommand={lastCommand} />
+                      </div>
+                    )}
+
+                    {transcripts.length > 0 && (
+                      <button
+                        onClick={resetTranscripts}
+                        className="text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      >
+                        {t.clearTranscription}
+                      </button>
+                    )}
+                  </div>
                 </div>
-
-                {/* Audio Visualizer */}
-                <VoiceVisualizer status={voiceStatus} className="mb-4" />
-
-                {/* Status Text */}
-                <div className="text-center mb-4">
-                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
-                    {voiceStatus === 'listening' && t.listening}
-                    {voiceStatus === 'processing' && t.processing}
-                    {voiceStatus === 'idle' && isSupported && t.startListening}
-                    {voiceStatus === 'unsupported' && t.unsupported}
-                    {voiceStatus === 'error' && t.error}
-                  </p>
-                </div>
-
-                {/* Transcription Display */}
-                <TranscriptionDisplay
-                  segments={transcripts}
-                  interimTranscript={interimTranscript}
-                  className="mb-4"
-                />
-
-                {/* Last Command Feedback */}
-                {lastCommand && (
-                  <VoiceCommandProcessor lastCommand={lastCommand} />
-                )}
-
-                {/* Clear Transcripts Button */}
-                {transcripts.length > 0 && (
-                  <button
-                    onClick={resetTranscripts}
-                    className="mt-4 w-full text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 underline"
-                  >
-                    {t.clearTranscription}
-                  </button>
-                )}
               </div>
 
-              {/* Invoice Field Guide */}
+              {/* Voice Commands Help - Right after mic */}
               <InvoiceFieldGuide invoiceData={invoiceData} />
 
-              {/* Manual Add Item Form */}
-              <AddItemForm onAddItem={addItem} />
+              {/* Forms Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Manual Add Item */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-6">
+                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                      <span className="p-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                      </span>
+                      {t.addItemManually}
+                   </h3>
+                   <AddItemForm onAddItem={addItem} />
+                </div>
 
-              {/* Invoice Details Form - Show on tablet and desktop */}
-              <InvoiceForm
-                invoiceData={invoiceData}
-                onUpdate={handleInvoiceUpdate}
-                className="hidden md:block"
-              />
-            </div>
+                {/* Invoice Details */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-6">
+                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                      <span className="p-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                      </span>
+                      {t.invoiceDetails}
+                   </h3>
+                   <InvoiceForm
+                    invoiceData={invoiceData}
+                    onUpdate={handleInvoiceUpdate}
+                  />
+                </div>
+              </div>
 
-            {/* Middle Column: Items List & Forms */}
-            <div className="space-y-6">
-              {/* Invoice Items */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-5 lg:p-6">
+              {/* Items List */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   {t.invoiceItems}
                 </h2>
@@ -304,22 +336,31 @@ function AppContent() {
                   onDeleteItem={removeItem}
                 />
               </div>
-
-              {/* Invoice Form - Show on mobile only */}
-              <InvoiceForm
-                invoiceData={invoiceData}
-                onUpdate={handleInvoiceUpdate}
-                className="md:hidden"
-              />
             </div>
 
-            {/* Right Column: Preview & PDF */}
-            <div className="space-y-6 md:col-span-2 xl:col-span-1">
-              {/* Invoice Preview */}
-              <InvoicePreview invoiceData={invoiceData} />
+            {/* Right Column: Preview (Sticky) */}
+            <div className="lg:col-span-5 xl:col-span-5 space-y-6">
+              <div className="sticky top-24 space-y-6">
+                {/* Preview Card */}
+                <div className="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden ring-1 ring-white/10">
+                  <div className="p-4 bg-gray-800/50 border-b border-white/5 flex items-center justify-between">
+                    <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Live Preview</h3>
+                    <div className="flex gap-2">
+                       <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+                       <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                       <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                    </div>
+                  </div>
+                  <div className="p-4 md:p-6 bg-gray-100 dark:bg-gray-900/50 overflow-x-auto">
+                     <InvoicePreview invoiceData={invoiceData} />
+                  </div>
+                </div>
 
-              {/* PDF Generator */}
-              <PDFGenerator ref={pdfGeneratorRef} invoiceData={invoiceData} />
+                {/* Actions */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+                   <PDFGenerator ref={pdfGeneratorRef} invoiceData={invoiceData} />
+                </div>
+              </div>
             </div>
           </div>
 
