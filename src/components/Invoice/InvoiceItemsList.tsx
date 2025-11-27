@@ -2,6 +2,7 @@ import { type FC } from 'react';
 import type { InvoiceItem as InvoiceItemType } from '../../types';
 import { InvoiceItem } from './InvoiceItem';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { formatCurrency } from '../../utils/currency';
 
 /**
  * Props for InvoiceItemsList component
@@ -30,7 +31,7 @@ export const InvoiceItemsList: FC<InvoiceItemsListProps> = ({
   onDeleteItem,
   className = '',
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Calculate summary totals
   const subtotal = items.reduce((sum, item) => sum + item.total, 0);
@@ -76,7 +77,7 @@ export const InvoiceItemsList: FC<InvoiceItemsListProps> = ({
                 {t.subtotal}
               </span>
               <span className="font-semibold text-gray-900 dark:text-white text-base md:text-lg">
-                ${subtotal.toFixed(2)}
+                {formatCurrency(subtotal, language)}
               </span>
             </div>
             <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">

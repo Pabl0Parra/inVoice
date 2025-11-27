@@ -2,11 +2,14 @@ import { type FC } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTab, type AppTab } from '../../contexts/TabContext';
+import { useState } from 'react';
+import { VoiceCommandHelp } from '../VoiceInput/VoiceCommandHelp';
 
 export const Header: FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { activeTab, setActiveTab } = useTab();
+  const [showVoiceHelp, setShowVoiceHelp] = useState(false);
 
   const handleTabClick = (tab: AppTab): void => {
     setActiveTab(tab);
@@ -56,6 +59,16 @@ export const Header: FC = () => {
           {/* Controls */}
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Language Toggle */}
+            {/* Voice Help Toggle */}
+            <button
+              onClick={() => setShowVoiceHelp(true)}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+              aria-label={language === 'es' ? 'Comandos de voz' : 'Voice commands'}
+              title={language === 'es' ? 'Ver comandos de voz' : 'View voice commands'}
+            >
+              <span className="text-xl">🎤</span>
+            </button>
+
             {/* Language Toggle */}
             <div className="flex items-center gap-4 mr-4">
               <button
@@ -100,6 +113,7 @@ export const Header: FC = () => {
           </div>
         </div>
       </div>
+      <VoiceCommandHelp isOpen={showVoiceHelp} onClose={() => setShowVoiceHelp(false)} />
     </header>
   );
 };

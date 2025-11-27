@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { formatCurrency } from '../../utils/currency';
 import type { InvoiceData } from '../../types';
 
 /**
@@ -128,10 +129,10 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
                     {item.quantity}
                   </td>
                   <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 dark:text-white text-right">
-                    ${item.unitPrice.toFixed(2)}
+                    {formatCurrency(item.unitPrice, language)}
                   </td>
                   <td className="py-2 md:py-3 px-1 md:px-2 text-xs md:text-sm text-gray-900 dark:text-white text-right font-medium">
-                    ${item.total.toFixed(2)}
+                    {formatCurrency(item.total, language)}
                   </td>
                 </tr>
               ))
@@ -146,7 +147,7 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
           <div className="flex justify-between text-xs md:text-sm">
             <span className="text-gray-600 dark:text-gray-400">{t.subtotal}:</span>
             <span className="text-gray-900 dark:text-white font-medium">
-              ${invoiceData.subtotal.toFixed(2)}
+              {formatCurrency(invoiceData.subtotal, language)}
             </span>
           </div>
           <div className="flex justify-between text-xs md:text-sm">
@@ -154,13 +155,13 @@ export const InvoicePreview: FC<InvoicePreviewProps> = ({
               {t.tax} ({(invoiceData.taxRate * 100).toFixed(1)}%):
             </span>
             <span className="text-gray-900 dark:text-white font-medium">
-              ${invoiceData.tax.toFixed(2)}
+              {formatCurrency(invoiceData.tax, language)}
             </span>
           </div>
           <div className="flex justify-between text-base md:text-lg font-bold pt-2 border-t-2 border-gray-300 dark:border-gray-600">
             <span className="text-gray-900 dark:text-white">{t.total}:</span>
             <span className="text-blue-600 dark:text-blue-400">
-              ${invoiceData.total.toFixed(2)}
+              {formatCurrency(invoiceData.total, language)}
             </span>
           </div>
         </div>

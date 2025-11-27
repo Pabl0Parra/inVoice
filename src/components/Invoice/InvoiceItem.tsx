@@ -1,5 +1,7 @@
 import { type FC } from 'react';
 import type { InvoiceItem as InvoiceItemType } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { formatCurrency } from '../../utils/currency';
 
 /**
  * Props for InvoiceItem component
@@ -31,6 +33,7 @@ export const InvoiceItem: FC<InvoiceItemProps> = ({
   isEditing = false,
   className = '',
 }) => {
+  const { language } = useLanguage();
   const handleEdit = (): void => {
     if (onEdit) {
       onEdit(item);
@@ -63,14 +66,14 @@ export const InvoiceItem: FC<InvoiceItemProps> = ({
           </h4>
           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
             <span>Qty: {item.quantity}</span>
-            <span>@ ${item.unitPrice.toFixed(2)}</span>
+            <span>@ {formatCurrency(item.unitPrice, language)}</span>
           </div>
         </div>
 
         {/* Total price */}
         <div className="flex-shrink-0 text-right">
           <p className="text-sm font-semibold text-gray-900">
-            ${item.total.toFixed(2)}
+            {formatCurrency(item.total, language)}
           </p>
         </div>
       </div>

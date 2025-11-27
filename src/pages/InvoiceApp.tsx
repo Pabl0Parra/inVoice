@@ -117,8 +117,8 @@ function AppContent() {
       dispatch({
         type: 'SET_CUSTOMER',
         payload: {
-          customerName: updates.customerName ?? '',
-          customerAddress: updates.customerAddress ?? '',
+          customerName: updates.customerName ?? invoiceData.customerName,
+          customerAddress: updates.customerAddress ?? invoiceData.customerAddress,
         },
       });
     }

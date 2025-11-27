@@ -1,6 +1,7 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import type { InvoiceData } from '../../types';
 import type { Translations, Language } from '../../locales/translations';
+import { formatCurrency } from '../../utils/currency';
 
 /**
  * Styles for PDF document
@@ -316,8 +317,8 @@ export const InvoicePDFTemplate = ({
             >
               <Text style={styles.colDescription}>{item.description}</Text>
               <Text style={styles.colQuantity}>{item.quantity}</Text>
-              <Text style={styles.colPrice}>${item.unitPrice.toFixed(2)}</Text>
-              <Text style={styles.colTotal}>${item.total.toFixed(2)}</Text>
+              <Text style={styles.colPrice}>{formatCurrency(item.unitPrice, language)}</Text>
+              <Text style={styles.colTotal}>{formatCurrency(item.total, language)}</Text>
             </View>
           ))}
         </View>
@@ -328,7 +329,7 @@ export const InvoicePDFTemplate = ({
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>{t.subtotal}</Text>
               <Text style={styles.totalValue}>
-                ${invoiceData.subtotal.toFixed(2)}
+                {formatCurrency(invoiceData.subtotal, language)}
               </Text>
             </View>
             <View style={styles.totalRow}>
@@ -336,13 +337,13 @@ export const InvoicePDFTemplate = ({
                 {t.tax} ({(invoiceData.taxRate * 100).toFixed(1)}%)
               </Text>
               <Text style={styles.totalValue}>
-                ${invoiceData.tax.toFixed(2)}
+                {formatCurrency(invoiceData.tax, language)}
               </Text>
             </View>
             <View style={styles.grandTotalRow}>
               <Text style={styles.grandTotalLabel}>{t.pdfTotalDue}</Text>
               <Text style={styles.grandTotalValue}>
-                ${invoiceData.total.toFixed(2)}
+                {formatCurrency(invoiceData.total, language)}
               </Text>
             </View>
           </View>

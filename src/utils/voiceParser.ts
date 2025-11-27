@@ -139,6 +139,17 @@ const commandPatterns: CommandPattern[] = [
     extractPayload: () => ({}),
     description: 'Generate PDF',
   },
+
+  // Set Invoice Number - English: "Set invoice number to INV-001"
+  // Spanish: "Número de factura INV-001"
+  {
+    pattern: /(?:set\s+)?(?:invoice\s+number|n[uú]mero\s+de\s+factura)\s+(?:to\s+)?(.+)/i,
+    type: 'set_invoice_number',
+    extractPayload: (matches) => ({
+      invoiceNumber: matches[1].trim().toUpperCase(),
+    }),
+    description: 'Set invoice number',
+  },
 ];
 
 /**
@@ -212,7 +223,10 @@ export const extractNumber = (text: string): number | null => {
 export const extractPrice = (text: string): number | null => {
   const patterns = [
     /\$(\d+(?:\.\d{2})?)/,  // $20.00
-    /(\d+(?:\.\d{2})?)\s*dollars?/i,  // 20 dollars
+    /€(\d+(?:\.\d{2})?)/,   // €20.00
+    /(\d+(?:\.\d{2})?)\s*€/, // 20.00€
+    /(\d+(?:\.\d{2})?)\s*(?:dollars?|d[oó]lares?)/i,  // 20 dollars/dólares
+    /(\d+(?:\.\d{2})?)\s*euros?/i,  // 20 euros
   ];
 
   for (const pattern of patterns) {
